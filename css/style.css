@@ -71,7 +71,7 @@ a { color: var(--green-d); }
 
 /* 文字预览（叠层拖拽）：与裁剪区并排等高，衬底填满，内层贴合图片 */
 .text-preview { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.tp-image-wrap { flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
+.tp-image-wrap { flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
 .tp-inner { position: relative; max-width: 100%; line-height: 0; }
 .tp-inner > img { display: block; max-width: 100%; max-height: min(40vh, 100%); width: auto; height: auto; border-radius: 6px; }
 .tp-overlay { position: absolute; inset: 0; pointer-events: none; }
@@ -100,6 +100,7 @@ textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border
 
 .crop-stage {
   position: relative;
+  overflow: hidden;
   background: #2b2f36;
   border-radius: var(--radius);
   padding: 8px;

@@ -55,6 +55,7 @@
   const layerTiled  = $("#layerTiled");
 
   let cropper = null;
+  let cropObserver = null;
   let lastBlobUrl = null;
   let estTimer = null;
   let refreshTimer = null;
@@ -258,6 +259,23 @@
         ready() { applyCurrentToCropper(); scheduleRefresh(); },
         crop() { updateRatioReadout(); scheduleRefresh(); }
       });
+      // 并排布局下，裁剪区宽度会随文字预览显隐/断点切换而变化；
+      // cropper 的 responsive 只监听 window resize，此处用 ResizeObserver 兜底触发重排，保证两栏对齐
+      if (window.ResizeObserver) {
+        if (cropObserver) cropObserver.disconnect();
+        let lastW = 0;
+        cropObserver = new ResizeObserver(() => {
+          const w = cropStage.clientWidth;
+          if (w && w !== lastW) {
+            lastW = w;
+            clearTimeout(cropObserver._t);
+            cropObserver._t = setTimeout(() => {
+              if (cropper) window.dispatchEvent(new Event("resize"));
+            }, 80);
+          }
+        });
+        cropObserver.observe(cropStage);
+      }
     };
     reader.readAsDataURL(file);
   }
