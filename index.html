@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>多平台配图裁剪工具 | 公众号/小程序/小红书/抖音封面配图在线裁剪</title>
+  <meta name="description" content="免费在线图片裁剪工具，覆盖微信、微信小程序、小红书、抖音/视频号、微博、哔哩哔哩等平台。内置封面图、分享图、推广图、竖屏/横屏配图预设尺寸，支持按比例或自定义像素裁剪，导出 PNG / JPEG / WebP。图片全程在本地浏览器处理，不上传服务器，安全隐私。" />
+  <meta name="keywords" content="图片裁剪,在线裁剪,公众号封面图,公众号配图,小程序分享图,小程序推广图,小红书配图,抖音封面,微博封面,B站封面,9:16,3:4,2.35:1,5:4,像素裁剪" />
+  <meta name="author" content="img-cropper" />
+  <link rel="canonical" href="https://example.com/" />
+
+  <!-- Open Graph / 社交分享 -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="多平台配图裁剪工具 | 公众号/小程序/小红书/抖音封面配图在线裁剪" />
+  <meta property="og:description" content="覆盖微信、小程序、小红书、抖音等平台的配图预设，比例/像素自由裁剪，PNG/JPEG/WebP 导出，本地处理安全隐私。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:url" content="https://example.com/" />
+
+  <!-- 结构化数据：利于搜索引擎与 AI 摘要抓取 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "多平台配图裁剪工具",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "browserRequirements": "Requires JavaScript. Works on modern browsers.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+    "description": "覆盖微信、微信小程序、小红书、抖音/视频号、微博、哔哩哔哩等平台配图尺寸的在线裁剪工具，支持比例与像素裁剪，导出 PNG/JPEG/WebP。",
+    "featureList": [
+      "微信 / 小程序 / 小红书 / 抖音 等平台预设",
+      "按比例裁剪",
+      "自定义像素尺寸裁剪（兜底）",
+      "PNG / JPEG / WebP 导出（含大小预估）",
+      "本地浏览器处理，不上传服务器"
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="vendor/cropper.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <h1 class="logo">🖼️ 多平台配图裁剪工具</h1>
+      <p class="tagline">公众号 · 小程序 · 小红书 · 抖音 等平台封面/配图，一键按比例或像素裁剪导出</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="tool" aria-label="图片裁剪工具">
+      <div class="tool-grid">
+        <!-- 左侧：上传 + 裁剪画布 -->
+        <div class="col-left">
+          <div id="dropZone" class="drop-zone" tabindex="0">
+            <input type="file" id="fileInput" accept="image/*" hidden />
+            <div id="emptyHint" class="drop-hint">
+              <p class="drop-icon">⬆️</p>
+              <p><strong>点击或拖拽图片到此处上传</strong></p>
+              <p class="muted">支持 JPG / PNG / WebP / GIF 等常见格式</p>
+            </div>
+          </div>
+          <div id="cropStage" class="crop-stage" style="display:none;">
+            <img id="cropImg" alt="待裁剪图片" />
+          </div>
+        </div>
+
+        <!-- 右侧：控制面板 -->
+        <aside class="col-right">
+          <div class="panel">
+            <h2>① 选择平台与规格</h2>
+            <label class="field">
+              <span>平台</span>
+              <select id="platformSel"></select>
+            </label>
+            <div id="presetWrap">
+              <label class="field">
+                <span>规格</span>
+                <select id="presetSel"></select>
+              </label>
+            </div>
+            <div id="customHint" class="custom-hint" style="display:none;">
+              在下方输入自定义宽高即可裁剪任意像素尺寸 —— 这是兜底方案，支持所有平台任意尺寸。
+            </div>
+            <div class="field-row">
+              <label class="field">
+                <span>宽 (px)</span>
+                <input type="number" id="inW" min="1" placeholder="如 1080" />
+              </label>
+              <label class="field">
+                <span>高 (px)</span>
+                <input type="number" id="inH" min="1" placeholder="如 1080" />
+              </label>
+            </div>
+            <label class="check">
+              <input type="checkbox" id="ratioLock" checked />
+              <span>锁定比例（取消可自由裁剪）</span>
+            </label>
+          </div>
+
+          <div class="panel">
+            <h2>② 导出设置</h2>
+            <label class="field">
+              <span>格式</span>
+              <select id="fmtSel"></select>
+            </label>
+            <div class="field" id="qualityRow">
+              <span>质量 <em id="qualityVal">92%</em></span>
+              <input type="range" id="quality" min="0.1" max="1" step="0.05" value="0.92" />
+            </div>
+            <p class="est">预计导出大小：<span id="sizeEst">—</span></p>
+            <button id="exportBtn" class="btn-primary" type="button">裁剪并导出</button>
+          </div>
+
+          <div class="panel result-panel" id="resultWrap" style="display:none;">
+            <h2>③ 结果预览</h2>
+            <img id="resultImg" class="result-img" alt="裁剪结果" />
+            <p id="resultMeta" class="muted"></p>
+            <a id="dlLink" class="btn-download" download>下载图片</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- SEO 内容区：长尾关键词落地，便于爬虫与 AI 抓取 -->
+    <section class="features">
+      <h2>为什么用这个工具？</h2>
+      <ul class="feat-grid">
+        <li>
+          <h3>🎯 多平台预设尺寸</h3>
+          <p>覆盖微信、微信小程序、小红书、抖音/视频号、微博、B站 的封面、分享图、推广图、竖屏/横屏配图，选完直接裁。</p>
+        </li>
+        <li>
+          <h3>🔒 本地处理，隐私安全</h3>
+          <p>所有图片仅在你的浏览器内用 Canvas 处理，<strong>不会上传到任何服务器</strong>，素材不外泄。</p>
+        </li>
+        <li>
+          <h3>📐 比例 / 像素双模式</h3>
+          <p>既能按常用比例一键锁定，也能输入精确的像素宽高，输出严格等于目标尺寸；自定义兜底支持任意尺寸。</p>
+        </li>
+        <li>
+          <h3>📦 多格式 + 大小预估</h3>
+          <p>支持 PNG（无损/透明）、JPEG、WebP，并实时预估导出文件大小，清晰与体积一目了然。</p>
+        </li>
+        <li>
+          <h3>📱 持续扩展</h3>
+          <p>平台与规格以数据表维护，新增平台或尺寸只需改一处，后续可持续扩展。</p>
+        </li>
+        <li>
+          <h3>⚡ 纯静态，秒开</h3>
+          <p>无后端、无数据库，部署在 CDN 边缘，打开即用，手机电脑都适配。</p>
+        </li>
+      </ul>
+
+      <h2>常见尺寸速查</h2>
+      <table class="spec-table">
+        <thead><tr><th>平台</th><th>用途</th><th>尺寸</th><th>比例</th></tr></thead>
+        <tbody>
+          <tr><td>微信</td><td>封面大图（详情页）</td><td>900×383</td><td>2.35:1</td></tr>
+          <tr><td>微信</td><td>封面方形（列表）</td><td>1080×1080</td><td>1:1</td></tr>
+          <tr><td>微信</td><td>分享 / 朋友圈海报</td><td>1080×1920</td><td>9:16</td></tr>
+          <tr><td>微信</td><td>正文横屏配图</td><td>1080×607</td><td>16:9</td></tr>
+          <tr><td>微信</td><td>正文竖屏配图</td><td>1080×1440</td><td>3:4</td></tr>
+          <tr><td>小程序</td><td>分享图片（卡片）</td><td>500×400</td><td>5:4</td></tr>
+          <tr><td>小程序</td><td>详细推广图（横版）</td><td>1200×800</td><td>3:2</td></tr>
+          <tr><td>小程序</td><td>详细推广图（竖版）</td><td>750×1334</td><td>9:16</td></tr>
+          <tr><td>小程序</td><td>通用素材封面</td><td>800×800</td><td>1:1</td></tr>
+          <tr><td>小红书</td><td>竖版封面（推荐）</td><td>1242×1660</td><td>3:4</td></tr>
+          <tr><td>小红书</td><td>横版</td><td>1440×1080</td><td>4:3</td></tr>
+          <tr><td>抖音/视频号</td><td>竖屏封面</td><td>1080×1920</td><td>9:16</td></tr>
+          <tr><td>微博</td><td>主页封面</td><td>920×300</td><td>约3:1</td></tr>
+          <tr><td>哔哩哔哩</td><td>视频封面</td><td>1146×717</td><td>16:10</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="muted">本地图片处理工具 · 图片不上传服务器 · © <span id="year"></span> img-cropper</p>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script src="vendor/cropper.min.js"></script>
+  <script src="js/presets.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

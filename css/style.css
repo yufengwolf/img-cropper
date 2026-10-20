@@ -1,0 +1,105 @@
+:root {
+  --green: #07c160;       /* 主强调色 */
+  --green-d: #06ad56;
+  --ink: #1f2329;
+  --muted: #8a8f99;
+  --line: #e6e8eb;
+  --bg: #f5f7f8;
+  --card: #ffffff;
+  --radius: 12px;
+  --shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+}
+a { color: var(--green-d); }
+.muted { color: var(--muted); font-size: 13px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* 头部 */
+.site-header { background: var(--card); border-bottom: 1px solid var(--line); padding: 22px 0; }
+.logo { margin: 0; font-size: 24px; }
+.tagline { margin: 4px 0 0; color: var(--muted); }
+
+/* 工具区 */
+.tool { margin: 24px 0; }
+.tool-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+@media (max-width: 860px){ .tool-grid { grid-template-columns: 1fr; } }
+
+.drop-zone {
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  min-height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; cursor: pointer; padding: 24px;
+  transition: border-color .15s, background .15s;
+}
+.drop-zone.drag { border-color: var(--green); background: #f0fff7; }
+.drop-icon { font-size: 34px; margin: 0 0 8px; }
+
+.crop-stage {
+  margin-top: 16px;
+  background: #2b2f36;
+  border-radius: var(--radius);
+  padding: 8px;
+}
+.crop-stage img { max-width: 100%; display: block; }
+
+/* 控制面板 */
+.col-right { display: flex; flex-direction: column; gap: 16px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.panel h2 { margin: 0 0 12px; font-size: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; margin-bottom: 12px; }
+.field > span { color: var(--muted); }
+.field-row { display: flex; gap: 12px; }
+.field-row .field { flex: 1; }
+select, input[type="number"] {
+  width: 100%; padding: 9px 10px; border: 1px solid var(--line);
+  border-radius: 8px; font-size: 14px; background: #fff; color: var(--ink);
+}
+input[type="range"] { width: 100%; accent-color: var(--green); }
+.check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+
+.custom-hint {
+  font-size: 13px; color: #2b6cb0; background: #eef5ff;
+  border: 1px solid #cfe2ff; border-radius: 8px; padding: 10px; margin-bottom: 12px;
+}
+
+.est { font-size: 13px; color: var(--ink); margin: 4px 0 12px; }
+.est span { font-weight: 600; color: var(--green-d); }
+
+.btn-primary {
+  width: 100%; padding: 12px; border: none; border-radius: 10px;
+  background: var(--green); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+}
+.btn-primary:hover { background: var(--green-d); }
+
+.result-panel .result-img { width: 100%; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
+.btn-download {
+  display: block; text-align: center; padding: 10px; border-radius: 10px;
+  background: var(--ink); color: #fff; text-decoration: none; font-weight: 600;
+}
+.btn-download:hover { opacity: .9; }
+
+/* 特性区 */
+.features { margin: 32px 0; }
+.features h2 { font-size: 20px; margin: 24px 0 12px; }
+.feat-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+@media (max-width: 860px){ .feat-grid { grid-template-columns: 1fr; } }
+.feat-grid li { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+.feat-grid h3 { margin: 0 0 6px; font-size: 15px; }
+.feat-grid p { margin: 0; font-size: 13px; color: #4a5057; }
+
+.spec-table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; font-size: 14px; }
+.spec-table th, .spec-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+.spec-table th { background: #f0f2f4; }
+.spec-table tr:last-child td { border-bottom: none; }
+
+.site-footer { text-align: center; padding: 8px 0 32px; }
