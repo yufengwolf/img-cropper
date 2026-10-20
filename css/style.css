@@ -39,7 +39,7 @@ a { color: var(--green-d); }
   border: 2px dashed var(--line);
   border-radius: var(--radius);
   background: var(--card);
-  min-height: 220px;
+  min-height: 180px;
   display: flex; align-items: center; justify-content: center;
   text-align: center; cursor: pointer; padding: 24px;
   transition: border-color .15s, background .15s;
@@ -64,10 +64,11 @@ a { color: var(--green-d); }
   border: 1px solid #cdeede; color: #06ad56; border-radius: 8px; padding: 8px 10px;
 }
 
-/* 文字预览（叠层拖拽） */
-.tp-image-wrap { position: relative; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
-.tp-image-wrap > img { display: block; width: 100%; border-radius: 6px; }
-.tp-overlay { position: absolute; inset: 8px; pointer-events: none; }
+/* 文字预览（叠层拖拽）：外层深色衬底居中，内层贴合图片，overlay 与图片渲染框严格重合 */
+.tp-image-wrap { display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
+.tp-inner { position: relative; max-width: 100%; line-height: 0; }
+.tp-inner > img { display: block; max-width: 100%; max-height: 36vh; width: auto; height: auto; border-radius: 6px; }
+.tp-overlay { position: absolute; inset: 0; pointer-events: none; }
 .tp-text {
   position: absolute; pointer-events: auto; cursor: move; line-height: 1.25;
   white-space: pre-wrap; word-break: break-word; user-select: none;
@@ -95,7 +96,10 @@ textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border
   background: #2b2f36;
   border-radius: var(--radius);
   padding: 8px;
+  /* 限高：cropper 会在容器内等比缩放，避免大图把页面撑出滚动条 */
+  height: clamp(300px, 46vh, 560px);
 }
+.crop-stage .cropper-container { max-height: 100%; }
 .crop-stage img { max-width: 100%; display: block; }
 
 /* 控制面板 */
@@ -127,7 +131,7 @@ input[type="range"] { width: 100%; accent-color: var(--green); }
 }
 .btn-primary:hover { background: var(--green-d); }
 
-.result-panel .result-img { width: 100%; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
+.result-panel .result-img { display: block; margin: 0 auto 8px; max-width: 100%; max-height: 40vh; width: auto; height: auto; border: 1px solid var(--line); border-radius: 8px; }
 .btn-download {
   display: block; text-align: center; padding: 10px; border-radius: 10px;
   background: var(--ink); color: #fff; text-decoration: none; font-weight: 600;
