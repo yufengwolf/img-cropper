@@ -35,20 +35,23 @@ a { color: var(--green-d); }
 /* 两栏均纵向排列 */
 .col-left, .col-right { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
 
-/* 处理区 + 文字预览：宽屏左右并排，行高统一（两栏严格等高），窄屏自动改为上下 */
+/* 右栏：左半处理区 ∥ 右半文字预览区，等宽等高；标题行行高固定保证衬底顶边齐平 */
 .work-row { display: flex; gap: 16px; align-items: stretch; min-width: 0; height: clamp(300px, 52vh, 600px); }
-.work-row > * { flex: 1 1 0; min-width: 0; min-height: 0; height: 100%; }
+.work-cell { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.cell-cap { flex: none; margin: 0; font-size: 13px; color: var(--muted); line-height: 20px; height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 860px){
   .work-row { flex-direction: column; height: auto; }
-  .work-row > * { height: auto; }
-  .crop-stage { height: clamp(300px, 46vh, 560px); }
+  .work-cell { min-height: 0; }
+  .drop-zone { flex: none; height: clamp(200px, 30vh, 320px); }
+  .crop-stage { flex: none; height: clamp(300px, 46vh, 560px); }
+  .text-preview { flex: none; height: clamp(240px, 36vh, 480px); }
 }
 
 .drop-zone {
+  flex: 1; min-height: 0;
   border: 2px dashed var(--line);
   border-radius: var(--radius);
   background: var(--card);
-  min-height: clamp(160px, 24vh, 240px);
   display: flex; align-items: center; justify-content: center;
   text-align: center; cursor: pointer; padding: 24px;
   transition: border-color .15s, background .15s;
@@ -73,12 +76,13 @@ a { color: var(--green-d); }
   border: 1px solid #cdeede; color: #06ad56; border-radius: 8px; padding: 8px 10px;
 }
 
-/* 文字预览（叠层拖拽）：与裁剪区共用行高，衬底填满，内层贴合图片 */
-.text-preview { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
-.tp-image-wrap { flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
+/* 文字预览（叠层拖拽）：衬底填满半区，内层贴合图片；空态提示居中 */
+.text-preview { flex: 1; min-height: 0; display: flex; }
+.tp-image-wrap { position: relative; flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
 .tp-inner { position: relative; max-width: 100%; line-height: 0; }
 .tp-inner > img { display: block; max-width: 100%; width: auto; height: auto; border-radius: 6px; }
 .tp-overlay { position: absolute; inset: 0; pointer-events: none; }
+.tp-empty { position: absolute; inset: 0; margin: 0; padding: 16px; display: flex; align-items: center; justify-content: center; text-align: center; color: #9aa3ad; font-size: 13px; line-height: 1.7; pointer-events: none; }
 .tp-text {
   position: absolute; pointer-events: auto; cursor: move; line-height: 1.25;
   white-space: pre-wrap; word-break: break-word; user-select: none;
@@ -104,12 +108,10 @@ textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border
 
 .crop-stage {
   position: relative;
-  overflow: hidden;
+  flex: 1; min-height: 0; overflow: hidden;
   background: #2b2f36;
   border-radius: var(--radius);
   padding: 8px;
-  /* 与文字预览共用 work-row 行高，保证两栏等高；窄屏单列时由 media query 恢复独立限高 */
-  height: 100%;
 }
 .crop-stage .cropper-container { max-height: 100%; }
 .crop-stage img { max-width: 100%; display: block; }
@@ -143,9 +145,9 @@ input[type="range"] { width: 100%; accent-color: var(--green); }
 }
 .btn-primary:hover { background: var(--green-d); }
 
-.result-panel .result-img { display: block; margin: 0 auto 8px; max-width: 100%; max-height: clamp(180px, 30vh, 360px); width: auto; height: auto; border: 1px solid var(--line); border-radius: 8px; }
+/* 底部下载按钮（导出结果即所见，底部仅保留下载） */
 .btn-download {
-  display: block; text-align: center; padding: 10px; border-radius: 10px;
+  display: block; text-align: center; padding: 12px; border-radius: 10px;
   background: var(--ink); color: #fff; text-decoration: none; font-weight: 600;
 }
 .btn-download:hover { opacity: .9; }

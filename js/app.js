@@ -27,9 +27,6 @@
   const qualityVal  = $("#qualityVal");
   const sizeEst     = $("#sizeEst");
   const exportBtn   = $("#exportBtn");
-  const resultWrap  = $("#resultWrap");
-  const resultImg   = $("#resultImg");
-  const resultMeta  = $("#resultMeta");
   const dlLink      = $("#dlLink");
   const emptyHint   = $("#emptyHint");
   // 文字图层
@@ -37,6 +34,7 @@
   const tpImg       = $("#tpImg");
   const tpImageWrap = $("#tpImageWrap");
   const tpOverlay   = $("#tpOverlay");
+  const tpEmpty     = $("#tpEmpty");
   const addLayerBtn = $("#addLayer");
   const templateSel = $("#templateSel");
   const saveTemplateBtn = $("#saveTemplate");
@@ -253,6 +251,9 @@
       state.layers = [];          // 换图重置文字图层（模板可重新套用）
       state.selLayer = null;
       renderLayerList();
+      if (tpEmpty) tpEmpty.style.display = "";  // 右半预览区恢复空态提示
+      if (tpImg) { tpImg.removeAttribute("src"); tpImg.style.width = ""; tpImg.style.height = ""; }
+      tpOverlay.innerHTML = "";
       if (cropper) cropper.destroy();
       cropper = new Cropper(cropImg, {
         viewMode: 1, autoCropArea: 0.85, background: true,
@@ -542,7 +543,7 @@
     if (!cropper) return;
     const canvas = cropper.getCroppedCanvas(currentOpts());
     if (!canvas) return;
-    textPreview.style.display = "block";
+    if (tpEmpty) tpEmpty.style.display = "none";
     tpImg.onload = () => { fitPreviewImg(); buildOverlay(); };
     tpImg.src = canvas.toDataURL("image/jpeg", 0.85);
   }
@@ -635,7 +636,7 @@
     estTimer = setTimeout(computeEstimate, 250);
   }
 
-  // ---------- 导出 ----------
+  // ---------- 导出（结果即所见：直接下载，底部按钮展示实际尺寸并可再次下载） ----------
   function doExport() {
     if (!cropper) { alert("请先上传图片"); return; }
     const opts = currentOpts();
@@ -649,12 +650,11 @@
       if (!blob) { alert("导出失败，浏览器可能不支持该格式"); return; }
       if (lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
       lastBlobUrl = URL.createObjectURL(blob);
-      resultImg.src = lastBlobUrl;
-      resultMeta.textContent =
-        `输出 ${composed.width}×${composed.height}px · ${(blob.size / 1024).toFixed(0)} KB · ${fmt.split("/")[1].toUpperCase()}`;
       dlLink.href = lastBlobUrl;
       dlLink.download = `cropped-${composed.width}x${composed.height}.${ext}`;
-      resultWrap.style.display = "block";
+      dlLink.textContent =
+        `⬇ 下载图片（${composed.width}×${composed.height} · ${(blob.size / 1024).toFixed(0)} KB）`;
+      dlLink.click();  // 导出后直接触发下载
     }, fmt, q);
   }
 
@@ -687,6 +687,9 @@
     });
 
     exportBtn.addEventListener("click", doExport);
+    dlLink.addEventListener("click", (e) => {
+      if (!lastBlobUrl) { e.preventDefault(); doExport(); }  // 尚未导出过：先执行导出（完成后自动下载）
+    });
     window.addEventListener("resize", () => { if (cropper) { fitPreviewImg(); buildOverlay(); } });
 
     qualityRow.style.display = fmtSel.value === "image/png" ? "none" : "flex";

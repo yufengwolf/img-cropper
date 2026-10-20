@@ -135,39 +135,44 @@
           </div>
         </aside>
 
-        <!-- 右侧：图片处理区域（上传 / 裁剪 / 文字预览 / 结果） -->
+        <!-- 右侧：图片处理区域（左半处理/上传区 ∥ 右半文字预览区，等宽等高） -->
         <div class="col-right">
           <button id="reUpload" class="reupload" type="button" style="display:none;">↺ 重新上传图片</button>
-          <div id="dropZone" class="drop-zone" tabindex="0">
-            <input type="file" id="fileInput" accept="image/*" hidden />
-            <div id="emptyHint" class="drop-hint">
-              <p class="drop-icon">⬆️</p>
-              <p><strong>点击或拖拽图片到此处上传</strong></p>
-              <p class="muted">支持 JPG / PNG / WebP / GIF 等常见格式</p>
-            </div>
-          </div>
-          <!-- 处理区与文字预览：宽屏左右并排，窄屏自动上下 -->
+
           <div class="work-row">
-            <div id="cropStage" class="crop-stage" style="display:none;">
-              <img id="cropImg" alt="待裁剪图片" />
+            <!-- 左半：图片处理（未上传时为上传区，上传后为裁剪区） -->
+            <div class="work-cell">
+              <p class="cell-cap">图片处理</p>
+              <div id="dropZone" class="drop-zone" tabindex="0">
+                <input type="file" id="fileInput" accept="image/*" hidden />
+                <div id="emptyHint" class="drop-hint">
+                  <p class="drop-icon">⬆️</p>
+                  <p><strong>点击或拖拽图片到此处上传</strong></p>
+                  <p class="muted">支持 JPG / PNG / WebP / GIF 等常见格式</p>
+                </div>
+              </div>
+              <div id="cropStage" class="crop-stage" style="display:none;">
+                <img id="cropImg" alt="待裁剪图片" />
+              </div>
             </div>
-            <div id="textPreview" class="text-preview" style="display:none;">
-              <p class="muted tiny">文字预览（可直接拖拽文字框定位）</p>
-              <div id="tpImageWrap" class="tp-image-wrap">
-                <div class="tp-inner">
-                  <img id="tpImg" alt="文字预览" />
-                  <div id="tpOverlay" class="tp-overlay"></div>
+
+            <!-- 右半：文字预览（拖拽定位区，合成结果实时可见） -->
+            <div class="work-cell">
+              <p class="cell-cap">文字预览（可直接拖拽文字框定位）</p>
+              <div id="textPreview" class="text-preview">
+                <div id="tpImageWrap" class="tp-image-wrap">
+                  <div class="tp-inner">
+                    <img id="tpImg" alt="文字预览" />
+                    <div id="tpOverlay" class="tp-overlay"></div>
+                  </div>
+                  <p id="tpEmpty" class="tp-empty">上传图片并添加文字后<br />这里实时显示合成预览</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="panel result-panel" id="resultWrap" style="display:none;">
-            <h2>④ 结果预览</h2>
-            <img id="resultImg" class="result-img" alt="裁剪结果" />
-            <p id="resultMeta" class="muted"></p>
-            <a id="dlLink" class="btn-download" download>下载图片</a>
-          </div>
+          <!-- 结果即所见：底部仅保留下载按钮 -->
+          <a id="dlLink" class="btn-download" href="javascript:void(0)">⬇ 下载图片</a>
         </div>
       </div>
     </section>
