@@ -27,19 +27,24 @@ a { color: var(--green-d); }
 .logo { margin: 0; font-size: 24px; }
 .tagline { margin: 4px 0 0; color: var(--muted); }
 
-/* 工具区：左栏控制面板（窄）+ 右栏图片处理区（宽） */
+/* 工具区：左栏控制面板（宽按视口比例）+ 右栏图片处理区 */
 .tool { margin: 24px 0; }
-.tool-grid { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 20px; align-items: start; }
+.tool-grid { display: grid; grid-template-columns: clamp(300px, 25vw, 420px) minmax(0, 1fr); gap: 20px; align-items: start; }
 @media (max-width: 860px){ .tool-grid { grid-template-columns: 1fr; } }
 
 /* 两栏均纵向排列 */
 .col-left, .col-right { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
 
+/* 处理区 + 文字预览：宽屏左右并排（等高），窄屏自动改为上下 */
+.work-row { display: flex; gap: 16px; align-items: stretch; min-width: 0; }
+.work-row > * { flex: 1 1 0; min-width: 0; }
+@media (max-width: 860px){ .work-row { flex-direction: column; } }
+
 .drop-zone {
   border: 2px dashed var(--line);
   border-radius: var(--radius);
   background: var(--card);
-  min-height: 180px;
+  min-height: clamp(160px, 24vh, 240px);
   display: flex; align-items: center; justify-content: center;
   text-align: center; cursor: pointer; padding: 24px;
   transition: border-color .15s, background .15s;
@@ -64,10 +69,11 @@ a { color: var(--green-d); }
   border: 1px solid #cdeede; color: #06ad56; border-radius: 8px; padding: 8px 10px;
 }
 
-/* 文字预览（叠层拖拽）：外层深色衬底居中，内层贴合图片，overlay 与图片渲染框严格重合 */
-.tp-image-wrap { display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
+/* 文字预览（叠层拖拽）：与裁剪区并排等高，衬底填满，内层贴合图片 */
+.text-preview { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tp-image-wrap { flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
 .tp-inner { position: relative; max-width: 100%; line-height: 0; }
-.tp-inner > img { display: block; max-width: 100%; max-height: 36vh; width: auto; height: auto; border-radius: 6px; }
+.tp-inner > img { display: block; max-width: 100%; max-height: min(40vh, 100%); width: auto; height: auto; border-radius: 6px; }
 .tp-overlay { position: absolute; inset: 0; pointer-events: none; }
 .tp-text {
   position: absolute; pointer-events: auto; cursor: move; line-height: 1.25;
@@ -93,6 +99,7 @@ a { color: var(--green-d); }
 textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; resize: vertical; font-family: inherit; }
 
 .crop-stage {
+  position: relative;
   background: #2b2f36;
   border-radius: var(--radius);
   padding: 8px;
@@ -131,7 +138,7 @@ input[type="range"] { width: 100%; accent-color: var(--green); }
 }
 .btn-primary:hover { background: var(--green-d); }
 
-.result-panel .result-img { display: block; margin: 0 auto 8px; max-width: 100%; max-height: 40vh; width: auto; height: auto; border: 1px solid var(--line); border-radius: 8px; }
+.result-panel .result-img { display: block; margin: 0 auto 8px; max-width: 100%; max-height: clamp(180px, 30vh, 360px); width: auto; height: auto; border: 1px solid var(--line); border-radius: 8px; }
 .btn-download {
   display: block; text-align: center; padding: 10px; border-radius: 10px;
   background: var(--ink); color: #fff; text-decoration: none; font-weight: 600;

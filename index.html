@@ -146,15 +146,18 @@
               <p class="muted">支持 JPG / PNG / WebP / GIF 等常见格式</p>
             </div>
           </div>
-          <div id="cropStage" class="crop-stage" style="display:none;">
-            <img id="cropImg" alt="待裁剪图片" />
-          </div>
-          <div id="textPreview" class="text-preview" style="display:none;">
-            <p class="muted tiny">文字预览（可直接拖拽文字框定位）</p>
-            <div id="tpImageWrap" class="tp-image-wrap">
-              <div class="tp-inner">
-                <img id="tpImg" alt="文字预览" />
-                <div id="tpOverlay" class="tp-overlay"></div>
+          <!-- 处理区与文字预览：宽屏左右并排，窄屏自动上下 -->
+          <div class="work-row">
+            <div id="cropStage" class="crop-stage" style="display:none;">
+              <img id="cropImg" alt="待裁剪图片" />
+            </div>
+            <div id="textPreview" class="text-preview" style="display:none;">
+              <p class="muted tiny">文字预览（可直接拖拽文字框定位）</p>
+              <div id="tpImageWrap" class="tp-image-wrap">
+                <div class="tp-inner">
+                  <img id="tpImg" alt="文字预览" />
+                  <div id="tpOverlay" class="tp-overlay"></div>
+                </div>
               </div>
             </div>
           </div>
