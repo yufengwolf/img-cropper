@@ -38,21 +38,10 @@
   let estTimer = null;
   const state = { targetW: null, targetH: null, lockRatio: null };
 
-  // 常见比例表（用于把小数比例标注成易读形式）
-  const COMMON_RATIOS = [
-    [1,1],[4,3],[3,2],[16,9],[3,4],[2,3],[9,16],[5,4],[4,5],
-    [2,1],[1,2],[3,1],[1,3],[16,10],[5,3],[3,5],[7,5],[5,7]
-  ];
+  // 比例读数：简单 X.XX:Y 形式，小数点后 2 位
   function ratioLabel(r) {
     if (!isFinite(r) || r <= 0) return "—";
-    const wide = r >= 1 ? `${r.toFixed(2)} : 1` : `1 : ${(1 / r).toFixed(2)}`;
-    let best = null, bestd = 1e9;
-    for (const [a, b] of COMMON_RATIOS) {
-      const d = Math.abs(r - a / b);
-      if (d < bestd) { bestd = d; best = [a, b]; }
-    }
-    const tag = bestd < 0.04 ? `（${best[0]}:${best[1]}）` : "";
-    return wide + tag;
+    return r >= 1 ? `${r.toFixed(2)}:1` : `1:${(1 / r).toFixed(2)}`;
   }
 
   // ---------- 构建下拉 ----------
@@ -73,7 +62,7 @@
     PRESETS[platformKey].items.forEach((it) => {
       const o = document.createElement("option");
       o.value = it.id;
-      o.textContent = `${it.name}（${it.w}×${it.h} · ${ratioLabel(it.w / it.h)}）`;
+      o.textContent = `${it.name}（${ratioLabel(it.w / it.h)}）`;
       presetSel.appendChild(o);
     });
   }
@@ -91,12 +80,13 @@
     if (cropper && !ratioLock.checked) {
       const d = cropper.getData();
       if (d && d.width && d.height) {
-        ratioReadout.textContent = "当前比例：" + ratioLabel(d.width / d.height) + "（拖拽实时更新）";
+        const rw = Math.round(d.width), rh = Math.round(d.height);
+        ratioReadout.textContent = `当前比例 ${ratioLabel(d.width / d.height)} · 选区 ${rw}×${rh}px（拖拽实时更新）`;
         return;
       }
     }
     if (state.lockRatio) {
-      ratioReadout.textContent = "锁定比例：" + ratioLabel(state.lockRatio);
+      ratioReadout.textContent = "锁定比例 " + ratioLabel(state.lockRatio);
     } else {
       ratioReadout.textContent = "当前比例：自由裁剪（拖拽实时更新）";
     }
