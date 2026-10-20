@@ -254,13 +254,19 @@
       if (tpEmpty) tpEmpty.style.display = "";  // 右半预览区恢复空态提示
       if (tpImg) { tpImg.removeAttribute("src"); tpImg.style.width = ""; tpImg.style.height = ""; }
       tpOverlay.innerHTML = "";
-      // 窄屏：上传成功后自动收起规格/导出面板，裁剪区立即可见（桌面端加 class 无视觉效果）
+      // 窄屏：上传成功后自动收起①②③，裁剪区立即可见（③ 收起后仍保留"添加文字/套模板"操作条）
       setPanelCollapsed($("#panelPreset"), true);
       setPanelCollapsed($("#panelExport"), true);
+      setPanelCollapsed($("#textPanel"), true);
       if (cropper) cropper.destroy();
       cropper = new Cropper(cropImg, {
         viewMode: 1, autoCropArea: 0.85, background: true,
         responsive: true, checkOrientation: true,
+        // 手机上没有鼠标滚轮：默认 crop 模式下拖拽是"重画选区"，会让人觉得图动不了。
+        // 窄屏改为 move 模式——拖图片即移动，裁剪框靠四角手柄调整，双指缩放图片。
+        dragMode: isNarrow() ? "move" : "crop",
+        toggleDragModeOnDblclick: false,
+        zoomOnTouch: true, zoomOnWheel: true,
         ready() { applyCurrentToCropper(); scheduleRefresh(); },
         crop() { updateRatioReadout(); scheduleRefresh(); }
       });
@@ -268,11 +274,11 @@
       // cropper 的 responsive 只监听 window resize，此处用 ResizeObserver 兜底触发重排，保证两栏对齐
       if (window.ResizeObserver) {
         if (cropObserver) cropObserver.disconnect();
-        let lastW = 0;
+        let lastW = 0, lastH = 0;
         cropObserver = new ResizeObserver(() => {
-          const w = cropStage.clientWidth;
-          if (w && w !== lastW) {
-            lastW = w;
+          const w = cropStage.clientWidth, h = cropStage.clientHeight;
+          if (w && h && (w !== lastW || h !== lastH)) {
+            lastW = w; lastH = h;
             clearTimeout(cropObserver._t);
             cropObserver._t = setTimeout(() => {
               if (cropper) window.dispatchEvent(new Event("resize"));
@@ -280,6 +286,14 @@
           }
         });
         cropObserver.observe(cropStage);
+      }
+      // 窄屏：上传后把裁剪区滚到视口上方（留一点边距），裁剪区 + 预览区一次性进入视野
+      if (isNarrow()) {
+        setTimeout(() => {
+          if (!cropStage || cropStage.style.display === "none") return;
+          const top = window.scrollY + cropStage.getBoundingClientRect().top - 56;
+          window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        }, 120);
       }
     };
     reader.readAsDataURL(file);
@@ -690,11 +704,15 @@
         p.classList.toggle("collapsed");
       });
     });
-    // 断点切回桌面端时清除所有折叠态，避免残留
+    // 断点切换：清折叠态；裁剪交互模式随之切换（窄屏 move / 桌面 crop）
     if (mqNarrow && mqNarrow.addEventListener) {
       mqNarrow.addEventListener("change", (ev) => {
         if (!ev.matches) {
           document.querySelectorAll(".panel.collapsed").forEach((p) => p.classList.remove("collapsed"));
+        }
+        if (cropper) {
+          cropper.setDragMode(ev.matches ? "move" : "crop");
+          window.dispatchEvent(new Event("resize"));
         }
       });
     }

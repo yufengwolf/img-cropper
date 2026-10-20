@@ -39,14 +39,6 @@ a { color: var(--green-d); }
 .work-row { display: flex; gap: 16px; align-items: stretch; min-width: 0; height: clamp(300px, 52vh, 600px); }
 .work-cell { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
 .cell-cap { flex: none; margin: 0; font-size: 13px; color: var(--muted); line-height: 20px; height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-@media (max-width: 860px){
-  .work-row { flex-direction: column; height: auto; }
-  .work-cell { min-height: 0; }
-  /* 控制面板折叠后图片区是主角：高度收紧，单屏可见 */
-  .drop-zone { flex: none; height: clamp(140px, 22vh, 220px); }
-  .crop-stage { flex: none; height: clamp(240px, 38vh, 420px); }
-  .text-preview { flex: none; height: clamp(200px, 30vh, 360px); }
-}
 
 .drop-zone {
   flex: 1; min-height: 0;
@@ -112,10 +104,14 @@ textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border
   flex: 1; min-height: 0; overflow: hidden;
   background: #2b2f36;
   border-radius: var(--radius);
-  padding: 8px;
+  /* 不能留内边距：Cropper 以内容盒为基准定容器尺寸，padding 会让容器比裁剪区宽出 2*padding，
+     宽度被撑出横向滚动条，裁剪框右边/下边被裁掉 */
+  padding: 0;
 }
 .crop-stage .cropper-container { max-height: 100%; }
 .crop-stage img { max-width: 100%; display: block; }
+/* 手机操作提示：仅窄屏显示 */
+.crop-tip { display: none; margin: 0; font-size: 12px; color: var(--muted); text-align: center; }
 
 /* 控制面板 */
 .col-right { display: flex; flex-direction: column; gap: 16px; }
@@ -182,3 +178,31 @@ input[type="range"] { width: 100%; accent-color: var(--green); }
 .spec-table tr:last-child td { border-bottom: none; }
 
 .site-footer { text-align: center; padding: 8px 0 32px; }
+
+/* ========== 窄屏（≤860px）布局 ==========
+ * 必须放在所有基础规则之后：同优先级下靠后者生效，早先写在基础规则之前导致 height 被覆盖，
+ * 裁剪区塌成 0 高（手机端完全无法裁剪）。另需把子项从 flex-basis:0 改为按内容撑开，
+ * 否则纵向 flex + height:auto 会把两个 work-cell 压成 0。
+ */
+@media (max-width: 860px){
+  .wrap { width: 94%; }
+  /* 用 minmax(0,1fr)：普通 1fr 的最小宽度是内容的 min-content，
+     裁剪容器一旦变宽就会把整列顶宽，出现横向滚动 */
+  .tool-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .work-row { flex-direction: column; height: auto; gap: 14px; }
+  .work-cell { flex: 0 0 auto; min-height: 0; }
+  .cell-cap { height: 18px; line-height: 18px; font-size: 12px; }
+
+  .drop-zone { flex: none; height: clamp(120px, 18vh, 180px); padding: 12px; }
+  .drop-icon { font-size: 26px; margin: 0 0 4px; }
+
+  /* 裁剪区是手机上的主操作区：给足高度，并接管触摸手势，避免拖拽时页面跟着滚动 */
+  .crop-stage { flex: none; height: clamp(240px, 38vh, 420px); touch-action: none; }
+  .crop-stage .cropper-container { touch-action: none; }
+
+  /* 裁剪区 + 预览区在常见手机（约 844 高度）上刚好一屏，不用来回滚 */
+  .text-preview { flex: none; height: clamp(160px, 24vh, 300px); }
+  .tp-empty { font-size: 12px; padding: 10px; }
+  .crop-tip { display: block; }
+}
