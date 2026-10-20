@@ -44,6 +44,20 @@
     return r >= 1 ? `${r.toFixed(2)}:1` : `1:${(1 / r).toFixed(2)}`;
   }
 
+  // 规格选项用的干净比例：整数比优先（1:1 / 16:9…），否则两位小数 X.XX:1
+  function cleanRatio(w, h) {
+    const r = w / h;
+    const common = [[1,1],[4,3],[3,2],[16,9],[3,4],[2,3],[9,16],[5,4],[4,5],
+      [2,1],[1,2],[3,1],[1,3],[16,10],[5,3],[3,5],[7,5],[5,7]];
+    let best = null, bestd = 1e9;
+    for (const [a, b] of common) {
+      const d = Math.abs(r - a / b);
+      if (d < bestd) { bestd = d; best = [a, b]; }
+    }
+    if (bestd < 0.02) return `${best[0]}:${best[1]}`;
+    return r >= 1 ? `${r.toFixed(2)}:1` : `1:${(1 / r).toFixed(2)}`;
+  }
+
   // ---------- 构建下拉 ----------
   function buildPlatformSelect() {
     PLATFORM_ORDER.forEach((k) => {
@@ -62,7 +76,8 @@
     PRESETS[platformKey].items.forEach((it) => {
       const o = document.createElement("option");
       o.value = it.id;
-      o.textContent = `${it.name}（${ratioLabel(it.w / it.h)}）`;
+      // 名称本身已含比例（如「1:1 方形」）则直接用名称；否则追加干净比例
+      o.textContent = it.name.includes(":") ? it.name : `${it.name} ${cleanRatio(it.w, it.h)}`;
       presetSel.appendChild(o);
     });
   }
