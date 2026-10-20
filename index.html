@@ -53,64 +53,69 @@
       <div class="tool-grid">
         <!-- 左侧：规格与导出控制面板 -->
         <aside class="col-left">
-          <div class="panel">
-            <h2>① 选择平台与规格</h2>
-            <label class="field">
-              <span>平台</span>
-              <select id="platformSel"></select>
-            </label>
-            <div id="presetWrap">
+          <div class="panel" id="panelPreset">
+            <h2 class="panel-head">① 选择平台与规格</h2>
+            <div class="panel-body">
               <label class="field">
-                <span>规格（决定裁剪比例）</span>
-                <select id="presetSel"></select>
+                <span>平台</span>
+                <select id="platformSel"></select>
               </label>
-            </div>
-            <div id="customHint" class="custom-hint" style="display:none;">
-              自由裁剪模式：可手动输入宽高（自动按比例锁定），也可直接拖拽图片选择区域，下方实时显示当前比例。
-            </div>
+              <div id="presetWrap">
+                <label class="field">
+                  <span>规格（决定裁剪比例）</span>
+                  <select id="presetSel"></select>
+                </label>
+              </div>
+              <div id="customHint" class="custom-hint" style="display:none;">
+                自由裁剪模式：可手动输入宽高（自动按比例锁定），也可直接拖拽图片选择区域，下方实时显示当前比例。
+              </div>
 
-            <div class="block-title">输出尺寸（像素，可自定义）</div>
-            <p class="muted tiny">比例由上方规格锁定；此处仅调整最终导出像素，例如同为 1:1 可设为 1080×1080 或 540×540。</p>
-            <div class="field-row">
-              <label class="field">
-                <span>宽 (px)</span>
-                <input type="number" id="inW" min="1" placeholder="如 1080" />
+              <div class="block-title">输出尺寸（像素，可自定义）</div>
+              <p class="muted tiny">比例由上方规格锁定；此处仅调整最终导出像素，例如同为 1:1 可设为 1080×1080 或 540×540。</p>
+              <div class="field-row">
+                <label class="field">
+                  <span>宽 (px)</span>
+                  <input type="number" id="inW" min="1" placeholder="如 1080" />
+                </label>
+                <label class="field">
+                  <span>高 (px)</span>
+                  <input type="number" id="inH" min="1" placeholder="如 1080" />
+                </label>
+              </div>
+              <label class="check">
+                <input type="checkbox" id="ratioLock" checked />
+                <span>锁定比例（取消可自由裁剪）</span>
               </label>
-              <label class="field">
-                <span>高 (px)</span>
-                <input type="number" id="inH" min="1" placeholder="如 1080" />
-              </label>
+              <div id="ratioReadout" class="ratio-readout">当前比例：—</div>
             </div>
-            <label class="check">
-              <input type="checkbox" id="ratioLock" checked />
-              <span>锁定比例（取消可自由裁剪）</span>
-            </label>
-            <div id="ratioReadout" class="ratio-readout">当前比例：—</div>
           </div>
 
-          <div class="panel">
-            <h2>② 导出设置</h2>
-            <label class="field">
-              <span>格式</span>
-              <select id="fmtSel"></select>
-            </label>
-            <div class="field" id="qualityRow">
-              <span>质量 <em id="qualityVal">92%</em></span>
-              <input type="range" id="quality" min="0.1" max="1" step="0.05" value="0.92" />
+          <div class="panel" id="panelExport">
+            <h2 class="panel-head">② 导出设置</h2>
+            <div class="panel-body">
+              <label class="field">
+                <span>格式</span>
+                <select id="fmtSel"></select>
+              </label>
+              <div class="field" id="qualityRow">
+                <span>质量 <em id="qualityVal">92%</em></span>
+                <input type="range" id="quality" min="0.1" max="1" step="0.05" value="0.92" />
+              </div>
+              <p class="est">预计导出大小：<span id="sizeEst">—</span></p>
+              <button id="exportBtn" class="btn-primary" type="button">裁剪并导出</button>
             </div>
-            <p class="est">预计导出大小：<span id="sizeEst">—</span></p>
-            <button id="exportBtn" class="btn-primary" type="button">裁剪并导出</button>
           </div>
 
           <div class="panel" id="textPanel">
-            <h2>③ 文字图层</h2>
+            <h2 class="panel-head">③ 文字图层</h2>
             <div class="layer-bar">
               <button id="addLayer" class="btn-mini" type="button">+ 添加文字</button>
               <select id="templateSel" class="tpl-sel"></select>
               <button id="saveTemplate" class="btn-mini" type="button">保存模板</button>
             </div>
-            <ul id="layerList" class="layer-list"></ul>
-            <div id="layerEditor" class="layer-editor" style="display:none;">
+            <div class="panel-body">
+              <ul id="layerList" class="layer-list"></ul>
+              <div id="layerEditor" class="layer-editor" style="display:none;">
               <label class="field"><span>文字内容（支持换行）</span><textarea id="layerText" rows="2"></textarea></label>
               <div class="field-row">
                 <label class="field"><span>字号 <em id="layerFontVal">6%</em></span><input type="range" id="layerFont" min="1" max="25" step="0.5" value="6" /></label>
@@ -131,6 +136,7 @@
                 <label class="field"><span>底条透明度 <em id="layerBgOpacityVal">50%</em></span><input type="range" id="layerBgOpacity" min="0.1" max="1" step="0.05" value="0.5" /></label>
               </div>
               <label class="check"><input type="checkbox" id="layerTiled" /> <span>平铺水印</span></label>
+            </div>
             </div>
           </div>
         </aside>

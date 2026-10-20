@@ -42,9 +42,10 @@ a { color: var(--green-d); }
 @media (max-width: 860px){
   .work-row { flex-direction: column; height: auto; }
   .work-cell { min-height: 0; }
-  .drop-zone { flex: none; height: clamp(200px, 30vh, 320px); }
-  .crop-stage { flex: none; height: clamp(300px, 46vh, 560px); }
-  .text-preview { flex: none; height: clamp(240px, 36vh, 480px); }
+  /* 控制面板折叠后图片区是主角：高度收紧，单屏可见 */
+  .drop-zone { flex: none; height: clamp(140px, 22vh, 220px); }
+  .crop-stage { flex: none; height: clamp(240px, 38vh, 420px); }
+  .text-preview { flex: none; height: clamp(200px, 30vh, 360px); }
 }
 
 .drop-zone {
@@ -120,6 +121,20 @@ textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border
 .col-right { display: flex; flex-direction: column; gap: 16px; }
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
 .panel h2 { margin: 0 0 12px; font-size: 16px; }
+
+/* 面板折叠头：桌面端纯标题；窄屏变为可点击手风琴头（右侧箭头指示） */
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.panel-head::after { content: "▾"; font-size: 13px; color: var(--muted); display: none; transition: transform .2s; }
+.panel.collapsed .panel-head::after { transform: rotate(-90deg); }
+.panel-body { display: block; }
+@media (max-width: 860px){
+  .panel-head { cursor: pointer; margin-bottom: 0; -webkit-tap-highlight-color: transparent; }
+  .panel-head::after { display: inline-block; }
+  .panel.collapsed .panel-head { margin-bottom: 0; }
+  .panel.collapsed .panel-body { display: none; }
+  /* 文字图层面板折叠时保留操作条（添加文字/套模板仍可一键操作） */
+  .panel.collapsed > .layer-bar { margin-bottom: 0; }
+}
 .field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; margin-bottom: 12px; }
 .field > span { color: var(--muted); }
 .field-row { display: flex; gap: 12px; }

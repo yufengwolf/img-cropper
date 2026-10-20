@@ -254,6 +254,9 @@
       if (tpEmpty) tpEmpty.style.display = "";  // 右半预览区恢复空态提示
       if (tpImg) { tpImg.removeAttribute("src"); tpImg.style.width = ""; tpImg.style.height = ""; }
       tpOverlay.innerHTML = "";
+      // 窄屏：上传成功后自动收起规格/导出面板，裁剪区立即可见（桌面端加 class 无视觉效果）
+      setPanelCollapsed($("#panelPreset"), true);
+      setPanelCollapsed($("#panelExport"), true);
       if (cropper) cropper.destroy();
       cropper = new Cropper(cropImg, {
         viewMode: 1, autoCropArea: 0.85, background: true,
@@ -658,12 +661,52 @@
     }, fmt, q);
   }
 
+  // ---------- 面板折叠（窄屏手风琴；桌面端始终展开） ----------
+  // 痛点：手机端左栏三块面板 + 上传/裁剪/预览竖着堆，页面无限长。
+  // 方案：≤860px 时面板标题变为可点击折叠头，设置类操作完成自动收起，把屏幕让给图片区；
+  //       桌面端标题不可点、面板恒定展开。
+  const mqNarrow = window.matchMedia ? window.matchMedia("(max-width: 860px)") : null;
+  const isNarrow = () => !!(mqNarrow && mqNarrow.matches);
+  let autoCollapseTimer = null;
+
+  function setPanelCollapsed(panel, collapsed) {
+    if (panel) panel.classList.toggle("collapsed", collapsed);
+  }
+  // 窄屏下：规格/导出设置操作停止 900ms 后自动收起（"设置好了就折叠"）
+  function scheduleAutoCollapse() {
+    if (!isNarrow()) return;
+    clearTimeout(autoCollapseTimer);
+    autoCollapseTimer = setTimeout(() => {
+      setPanelCollapsed($("#panelPreset"), true);
+      setPanelCollapsed($("#panelExport"), true);
+    }, 900);
+  }
+  function bindPanelCollapse() {
+    document.querySelectorAll(".panel").forEach((p) => {
+      const head = p.querySelector(".panel-head");
+      if (!head) return;
+      head.addEventListener("click", () => {
+        if (!isNarrow()) return;  // 桌面端标题不可点，保持展开
+        p.classList.toggle("collapsed");
+      });
+    });
+    // 断点切回桌面端时清除所有折叠态，避免残留
+    if (mqNarrow && mqNarrow.addEventListener) {
+      mqNarrow.addEventListener("change", (ev) => {
+        if (!ev.matches) {
+          document.querySelectorAll(".panel.collapsed").forEach((p) => p.classList.remove("collapsed"));
+        }
+      });
+    }
+  }
+
   // ---------- 绑定 ----------
   function bind() {
     buildPlatformSelect();
     buildFormatSelect();
     buildTemplateSel();
     bindLayerInputs();
+    bindPanelCollapse();
 
     fileInput.addEventListener("change", (e) => loadFile(e.target.files[0]));
     reUpload.addEventListener("click", () => fileInput.click());
@@ -672,21 +715,26 @@
     dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
     dropZone.addEventListener("drop", onDrop);
 
-    platformSel.addEventListener("change", onPlatformChange);
-    presetSel.addEventListener("change", onPresetChange);
-    inW.addEventListener("input", () => onSizeInput("w"));
-    inH.addEventListener("input", () => onSizeInput("h"));
+    platformSel.addEventListener("change", () => { onPlatformChange(); scheduleAutoCollapse(); });
+    presetSel.addEventListener("change", () => { onPresetChange(); scheduleAutoCollapse(); });
+    inW.addEventListener("input", () => { onSizeInput("w"); scheduleAutoCollapse(); });
+    inH.addEventListener("input", () => { onSizeInput("h"); scheduleAutoCollapse(); });
     ratioLock.addEventListener("change", onRatioLockToggle);
 
     fmtSel.addEventListener("change", () => {
       qualityRow.style.display = fmtSel.value === "image/png" ? "none" : "flex";
+      scheduleAutoCollapse();
     });
     quality.addEventListener("input", () => {
       qualityVal.textContent = Math.round(quality.value * 100) + "%";
       scheduleEstimate();
+      scheduleAutoCollapse();
     });
 
-    exportBtn.addEventListener("click", doExport);
+    exportBtn.addEventListener("click", () => {
+      doExport();
+      setPanelCollapsed($("#panelExport"), true);  // 导出完成即收起，窄屏下直接看到结果
+    });
     dlLink.addEventListener("click", (e) => {
       if (!lastBlobUrl) { e.preventDefault(); doExport(); }  // 尚未导出过：先执行导出（完成后自动下载）
     });
