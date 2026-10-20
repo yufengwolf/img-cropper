@@ -20,7 +20,7 @@ body {
 }
 a { color: var(--green-d); }
 .muted { color: var(--muted); font-size: 13px; }
-.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.wrap { width: 90%; margin: 0 auto; }
 
 /* 头部 */
 .site-header { background: var(--card); border-bottom: 1px solid var(--line); padding: 22px 0; }
@@ -29,8 +29,11 @@ a { color: var(--green-d); }
 
 /* 工具区 */
 .tool { margin: 24px 0; }
-.tool-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+.tool-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
 @media (max-width: 860px){ .tool-grid { grid-template-columns: 1fr; } }
+
+/* 左列纵向排列：规格面板 + 上传/裁剪 + 文字预览 */
+.col-left { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
 
 .drop-zone {
   border: 2px dashed var(--line);
@@ -46,7 +49,7 @@ a { color: var(--green-d); }
 
 /* 重新上传按钮（图片加载后显示，上传区本身隐藏） */
 .reupload {
-  margin-bottom: 12px; padding: 8px 14px; border: 1px solid var(--line);
+  padding: 8px 14px; border: 1px solid var(--line);
   background: #fff; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--ink);
 }
 .reupload:hover { border-color: var(--green); color: var(--green-d); }
@@ -62,7 +65,6 @@ a { color: var(--green-d); }
 }
 
 /* 文字预览（叠层拖拽） */
-.text-preview { margin-top: 16px; }
 .tp-image-wrap { position: relative; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
 .tp-image-wrap > img { display: block; width: 100%; border-radius: 6px; }
 .tp-overlay { position: absolute; inset: 8px; pointer-events: none; }
@@ -90,7 +92,6 @@ a { color: var(--green-d); }
 textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; resize: vertical; font-family: inherit; }
 
 .crop-stage {
-  margin-top: 16px;
   background: #2b2f36;
   border-radius: var(--radius);
   padding: 8px;
