@@ -65,6 +65,13 @@
           <div id="cropStage" class="crop-stage" style="display:none;">
             <img id="cropImg" alt="待裁剪图片" />
           </div>
+          <div id="textPreview" class="text-preview" style="display:none;">
+            <p class="muted tiny">文字预览（可直接拖拽文字框定位）</p>
+            <div id="tpImageWrap" class="tp-image-wrap">
+              <img id="tpImg" alt="文字预览" />
+              <div id="tpOverlay" class="tp-overlay"></div>
+            </div>
+          </div>
         </div>
 
         <!-- 右侧：控制面板 -->
@@ -118,8 +125,40 @@
             <button id="exportBtn" class="btn-primary" type="button">裁剪并导出</button>
           </div>
 
+          <div class="panel" id="textPanel">
+            <h2>③ 文字图层</h2>
+            <div class="layer-bar">
+              <button id="addLayer" class="btn-mini" type="button">+ 添加文字</button>
+              <select id="templateSel" class="tpl-sel"></select>
+              <button id="saveTemplate" class="btn-mini" type="button">保存模板</button>
+            </div>
+            <ul id="layerList" class="layer-list"></ul>
+            <div id="layerEditor" class="layer-editor" style="display:none;">
+              <label class="field"><span>文字内容（支持换行）</span><textarea id="layerText" rows="2"></textarea></label>
+              <div class="field-row">
+                <label class="field"><span>字号 <em id="layerFontVal">6%</em></span><input type="range" id="layerFont" min="1" max="25" step="0.5" value="6" /></label>
+                <label class="field"><span>颜色</span><input type="color" id="layerColor" value="#ffffff" /></label>
+              </div>
+              <div class="field-row">
+                <label class="field"><span>对齐</span><select id="layerAlign"><option value="left">左</option><option value="center" selected>居中</option><option value="right">右</option></select></label>
+                <label class="field"><span>透明度 <em id="layerOpacityVal">100%</em></span><input type="range" id="layerOpacity" min="0.1" max="1" step="0.05" value="1" /></label>
+              </div>
+              <div class="field-row">
+                <label class="field"><span>旋转 <em id="layerRotationVal">0°</em></span><input type="range" id="layerRotation" min="-180" max="180" step="1" value="0" /></label>
+                <label class="field"><span>换行宽 <em id="layerBoxWVal">0%</em></span><input type="range" id="layerBoxW" min="0" max="100" step="1" value="0" /></label>
+              </div>
+              <label class="check"><input type="checkbox" id="layerBold" /> <span>加粗</span></label>
+              <label class="check"><input type="checkbox" id="layerBg" /> <span>半透明底条</span></label>
+              <div class="field-row" id="bgRow" style="display:none;">
+                <label class="field"><span>底条色</span><input type="color" id="layerBgColor" value="#000000" /></label>
+                <label class="field"><span>底条透明度 <em id="layerBgOpacityVal">50%</em></span><input type="range" id="layerBgOpacity" min="0.1" max="1" step="0.05" value="0.5" /></label>
+              </div>
+              <label class="check"><input type="checkbox" id="layerTiled" /> <span>平铺水印</span></label>
+            </div>
+          </div>
+
           <div class="panel result-panel" id="resultWrap" style="display:none;">
-            <h2>③ 结果预览</h2>
+            <h2>④ 结果预览</h2>
             <img id="resultImg" class="result-img" alt="裁剪结果" />
             <p id="resultMeta" class="muted"></p>
             <a id="dlLink" class="btn-download" download>下载图片</a>

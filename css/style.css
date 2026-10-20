@@ -61,6 +61,34 @@ a { color: var(--green-d); }
   border: 1px solid #cdeede; color: #06ad56; border-radius: 8px; padding: 8px 10px;
 }
 
+/* 文字预览（叠层拖拽） */
+.text-preview { margin-top: 16px; }
+.tp-image-wrap { position: relative; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
+.tp-image-wrap > img { display: block; width: 100%; border-radius: 6px; }
+.tp-overlay { position: absolute; inset: 8px; pointer-events: none; }
+.tp-text {
+  position: absolute; pointer-events: auto; cursor: move; line-height: 1.25;
+  white-space: pre-wrap; word-break: break-word; user-select: none;
+  text-shadow: 0 1px 3px rgba(0,0,0,.45);
+}
+.tp-text.sel { outline: 1px dashed var(--green); outline-offset: 2px; }
+.tp-text.tiled { opacity: .5; }
+
+/* 文字图层面板 */
+.layer-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+.btn-mini { padding: 6px 10px; border: 1px solid var(--line); background: #fff; border-radius: 8px; cursor: pointer; font-size: 13px; }
+.btn-mini:hover { border-color: var(--green); color: var(--green-d); }
+.tpl-sel { flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; background: #fff; }
+.layer-list { list-style: none; padding: 0; margin: 0 0 10px; }
+.layer-item { display: flex; align-items: center; gap: 4px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 6px; font-size: 13px; cursor: pointer; background: #fff; }
+.layer-item.active { border-color: var(--green); background: #f0fff7; }
+.li-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.li-btn { border: none; background: transparent; cursor: pointer; font-size: 13px; color: var(--muted); padding: 2px 4px; }
+.li-btn:hover { color: var(--green-d); }
+.li-btn.del:hover { color: #e54d42; }
+.layer-editor { border-top: 1px dashed var(--line); padding-top: 12px; }
+textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; resize: vertical; font-family: inherit; }
+
 .crop-stage {
   margin-top: 16px;
   background: #2b2f36;
