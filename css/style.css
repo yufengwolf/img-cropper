@@ -44,6 +44,23 @@ a { color: var(--green-d); }
 .drop-zone.drag { border-color: var(--green); background: #f0fff7; }
 .drop-icon { font-size: 34px; margin: 0 0 8px; }
 
+/* 重新上传按钮（图片加载后显示，上传区本身隐藏） */
+.reupload {
+  margin-bottom: 12px; padding: 8px 14px; border: 1px solid var(--line);
+  background: #fff; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--ink);
+}
+.reupload:hover { border-color: var(--green); color: var(--green-d); }
+
+/* 输出尺寸区块标题 */
+.block-title { font-size: 13px; font-weight: 600; color: var(--ink); margin: 6px 0 2px; }
+.tiny { margin: 0 0 10px; }
+
+/* 比例实时读数 */
+.ratio-readout {
+  margin-top: 10px; font-size: 13px; background: #f0fff7;
+  border: 1px solid #cdeede; color: #06ad56; border-radius: 8px; padding: 8px 10px;
+}
+
 .crop-stage {
   margin-top: 16px;
   background: #2b2f36;
