@@ -35,6 +35,7 @@
   // 文字图层
   const textPreview = $("#textPreview");
   const tpImg       = $("#tpImg");
+  const tpImageWrap = $("#tpImageWrap");
   const tpOverlay   = $("#tpOverlay");
   const addLayerBtn = $("#addLayer");
   const templateSel = $("#templateSel");
@@ -542,8 +543,25 @@
     const canvas = cropper.getCroppedCanvas(currentOpts());
     if (!canvas) return;
     textPreview.style.display = "block";
-    tpImg.onload = () => buildOverlay();
+    tpImg.onload = () => { fitPreviewImg(); buildOverlay(); };
     tpImg.src = canvas.toDataURL("image/jpeg", 0.85);
+  }
+  // 预览图按衬底可用空间等比缩放（contain）：纯 CSS 的百分比限高在嵌套 flex 中会 cyclic 失效，
+  // 且 overlay 必须贴合图片渲染框，故用实测尺寸赋值；tp-inner 为 inline-block 会跟随图片盒，
+  // overlay 与拖拽/字号基准自动保持重合
+  function fitPreviewImg() {
+    const availW = tpImageWrap.clientWidth - 16;   // 衬底左右 padding 8+8
+    const availH = tpImageWrap.clientHeight - 16;  // 衬底上下 padding 8+8
+    if (availW <= 0 || availH <= 0) return;
+    tpImg.style.width = ""; tpImg.style.height = "";
+    const natW = tpImg.naturalWidth || tpImg.clientWidth;
+    const natH = tpImg.naturalHeight || tpImg.clientHeight;
+    if (!natW || !natH) return;
+    const scale = Math.min(availW / natW, availH / natH, 1);
+    if (scale < 1) {
+      tpImg.style.width = Math.round(natW * scale) + "px";
+      tpImg.style.height = Math.round(natH * scale) + "px";
+    }
   }
   function buildOverlay() {
     tpOverlay.innerHTML = "";
@@ -669,7 +687,7 @@
     });
 
     exportBtn.addEventListener("click", doExport);
-    window.addEventListener("resize", () => { if (cropper) buildOverlay(); });
+    window.addEventListener("resize", () => { if (cropper) { fitPreviewImg(); buildOverlay(); } });
 
     qualityRow.style.display = fmtSel.value === "image/png" ? "none" : "flex";
     onPlatformChange();

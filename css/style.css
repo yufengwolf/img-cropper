@@ -35,10 +35,14 @@ a { color: var(--green-d); }
 /* 两栏均纵向排列 */
 .col-left, .col-right { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
 
-/* 处理区 + 文字预览：宽屏左右并排（等高），窄屏自动改为上下 */
-.work-row { display: flex; gap: 16px; align-items: stretch; min-width: 0; }
-.work-row > * { flex: 1 1 0; min-width: 0; }
-@media (max-width: 860px){ .work-row { flex-direction: column; } }
+/* 处理区 + 文字预览：宽屏左右并排，行高统一（两栏严格等高），窄屏自动改为上下 */
+.work-row { display: flex; gap: 16px; align-items: stretch; min-width: 0; height: clamp(300px, 52vh, 600px); }
+.work-row > * { flex: 1 1 0; min-width: 0; min-height: 0; height: 100%; }
+@media (max-width: 860px){
+  .work-row { flex-direction: column; height: auto; }
+  .work-row > * { height: auto; }
+  .crop-stage { height: clamp(300px, 46vh, 560px); }
+}
 
 .drop-zone {
   border: 2px dashed var(--line);
@@ -69,11 +73,11 @@ a { color: var(--green-d); }
   border: 1px solid #cdeede; color: #06ad56; border-radius: 8px; padding: 8px 10px;
 }
 
-/* 文字预览（叠层拖拽）：与裁剪区并排等高，衬底填满，内层贴合图片 */
-.text-preview { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+/* 文字预览（叠层拖拽）：与裁剪区共用行高，衬底填满，内层贴合图片 */
+.text-preview { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
 .tp-image-wrap { flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
 .tp-inner { position: relative; max-width: 100%; line-height: 0; }
-.tp-inner > img { display: block; max-width: 100%; max-height: min(40vh, 100%); width: auto; height: auto; border-radius: 6px; }
+.tp-inner > img { display: block; max-width: 100%; width: auto; height: auto; border-radius: 6px; }
 .tp-overlay { position: absolute; inset: 0; pointer-events: none; }
 .tp-text {
   position: absolute; pointer-events: auto; cursor: move; line-height: 1.25;
@@ -104,8 +108,8 @@ textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border
   background: #2b2f36;
   border-radius: var(--radius);
   padding: 8px;
-  /* 限高：cropper 会在容器内等比缩放，避免大图把页面撑出滚动条 */
-  height: clamp(300px, 46vh, 560px);
+  /* 与文字预览共用 work-row 行高，保证两栏等高；窄屏单列时由 media query 恢复独立限高 */
+  height: 100%;
 }
 .crop-stage .cropper-container { max-height: 100%; }
 .crop-stage img { max-width: 100%; display: block; }
