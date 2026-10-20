@@ -27,13 +27,13 @@ a { color: var(--green-d); }
 .logo { margin: 0; font-size: 24px; }
 .tagline { margin: 4px 0 0; color: var(--muted); }
 
-/* 工具区 */
+/* 工具区：左栏控制面板（窄）+ 右栏图片处理区（宽） */
 .tool { margin: 24px 0; }
-.tool-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+.tool-grid { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 20px; align-items: start; }
 @media (max-width: 860px){ .tool-grid { grid-template-columns: 1fr; } }
 
-/* 左列纵向排列：规格面板 + 上传/裁剪 + 文字预览 */
-.col-left { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
+/* 两栏均纵向排列 */
+.col-left, .col-right { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
 
 .drop-zone {
   border: 2px dashed var(--line);

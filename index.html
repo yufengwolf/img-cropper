@@ -51,8 +51,8 @@
   <main class="wrap">
     <section class="tool" aria-label="图片裁剪工具">
       <div class="tool-grid">
-        <!-- 左侧：规格选择 + 上传 + 裁剪画布 -->
-        <div class="col-left">
+        <!-- 左侧：规格与导出控制面板 -->
+        <aside class="col-left">
           <div class="panel">
             <h2>① 选择平台与规格</h2>
             <label class="field">
@@ -88,29 +88,6 @@
             <div id="ratioReadout" class="ratio-readout">当前比例：—</div>
           </div>
 
-          <button id="reUpload" class="reupload" type="button" style="display:none;">↺ 重新上传图片</button>
-          <div id="dropZone" class="drop-zone" tabindex="0">
-            <input type="file" id="fileInput" accept="image/*" hidden />
-            <div id="emptyHint" class="drop-hint">
-              <p class="drop-icon">⬆️</p>
-              <p><strong>点击或拖拽图片到此处上传</strong></p>
-              <p class="muted">支持 JPG / PNG / WebP / GIF 等常见格式</p>
-            </div>
-          </div>
-          <div id="cropStage" class="crop-stage" style="display:none;">
-            <img id="cropImg" alt="待裁剪图片" />
-          </div>
-          <div id="textPreview" class="text-preview" style="display:none;">
-            <p class="muted tiny">文字预览（可直接拖拽文字框定位）</p>
-            <div id="tpImageWrap" class="tp-image-wrap">
-              <img id="tpImg" alt="文字预览" />
-              <div id="tpOverlay" class="tp-overlay"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 右侧：导出 / 文字 / 结果 -->
-        <aside class="col-right">
           <div class="panel">
             <h2>② 导出设置</h2>
             <label class="field">
@@ -156,6 +133,29 @@
               <label class="check"><input type="checkbox" id="layerTiled" /> <span>平铺水印</span></label>
             </div>
           </div>
+        </aside>
+
+        <!-- 右侧：图片处理区域（上传 / 裁剪 / 文字预览 / 结果） -->
+        <div class="col-right">
+          <button id="reUpload" class="reupload" type="button" style="display:none;">↺ 重新上传图片</button>
+          <div id="dropZone" class="drop-zone" tabindex="0">
+            <input type="file" id="fileInput" accept="image/*" hidden />
+            <div id="emptyHint" class="drop-hint">
+              <p class="drop-icon">⬆️</p>
+              <p><strong>点击或拖拽图片到此处上传</strong></p>
+              <p class="muted">支持 JPG / PNG / WebP / GIF 等常见格式</p>
+            </div>
+          </div>
+          <div id="cropStage" class="crop-stage" style="display:none;">
+            <img id="cropImg" alt="待裁剪图片" />
+          </div>
+          <div id="textPreview" class="text-preview" style="display:none;">
+            <p class="muted tiny">文字预览（可直接拖拽文字框定位）</p>
+            <div id="tpImageWrap" class="tp-image-wrap">
+              <img id="tpImg" alt="文字预览" />
+              <div id="tpOverlay" class="tp-overlay"></div>
+            </div>
+          </div>
 
           <div class="panel result-panel" id="resultWrap" style="display:none;">
             <h2>④ 结果预览</h2>
@@ -163,7 +163,7 @@
             <p id="resultMeta" class="muted"></p>
             <a id="dlLink" class="btn-download" download>下载图片</a>
           </div>
-        </aside>
+        </div>
       </div>
     </section>
 
