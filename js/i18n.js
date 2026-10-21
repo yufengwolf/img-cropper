@@ -18,6 +18,14 @@ const I18N = {
     zh: "公众号 · 小程序 · 小红书 · 抖音 等平台封面/配图，一键按比例或像素裁剪导出",
     en: "Cover & post images for WeChat, Xiaohongshu, Douyin, YouTube, Instagram… crop & export in one click"
   },
+  trust_badge: {
+    zh: "🔒 图片全程本地处理，零上传任何服务器",
+    en: "🔒 Processed locally — zero upload to any server"
+  },
+  drop_trust: {
+    zh: "🔒 图片仅在你的设备本地处理，不会上传",
+    en: "🔒 Your image stays on your device — nothing is uploaded"
+  },
   meta_title_short: {
     zh: "多平台配图裁剪工具",
     en: "Online Image Cropper"
@@ -93,10 +101,10 @@ const I18N = {
     zh: "覆盖微信、微信小程序、小红书、抖音/视频号、微博、B站，以及 YouTube、Instagram、Facebook 等的封面、分享图、推广图、竖屏/横屏配图，选完直接裁。",
     en: "Covers, share & promo images, portrait/landscape for WeChat, Mini Program, Xiaohongshu, Douyin, Weibo, Bilibili, YouTube, Instagram, Facebook and more — pick and crop."
   },
-  f2_t: { zh: "🔒 本地处理，隐私安全", en: "🔒 Private, local processing" },
+  f2_t: { zh: "🔒 零上传 · 本地处理，隐私安全", en: "🔒 No upload · private & local" },
   f2_p: {
-    zh: "所有图片仅在你的浏览器内用 Canvas 处理，不会上传到任何服务器，素材不外泄。",
-    en: "Everything runs in your browser via Canvas — nothing is uploaded, your images stay private."
+    zh: "所有图片仅在你的浏览器内用 Canvas 处理，零上传到任何服务器，敏感素材不外泄，比云端工具更安心。",
+    en: "All processing happens in your browser via Canvas — zero upload to any server. Sensitive images never leave your device, safer than cloud tools."
   },
   f3_t: { zh: "📐 比例 / 像素双模式", en: "📐 Ratio & pixel modes" },
   f3_p: {

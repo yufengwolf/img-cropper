@@ -28,6 +28,8 @@ a { color: var(--green-d); }
 .header-brand { min-width: 0; }
 .logo { margin: 0; font-size: 24px; }
 .tagline { margin: 4px 0 0; color: var(--muted); }
+.trust-badge { display: inline-block; margin: 8px 0 0; padding: 5px 12px; border-radius: 999px; background: #e9f9f0; color: #06ad56; font-size: 13px; font-weight: 600; border: 1px solid #cdeede; }
+.trust-inline { margin: 12px 0 0; color: #06ad56; font-size: 12px; font-weight: 600; }
 
 /* 语言切换 */
 .lang-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; flex: none; }
