@@ -95,33 +95,105 @@
 
   // ---------- 构建下拉 ----------
   function buildPlatformSelect() {
+    platformSel.innerHTML = "";
     PLATFORM_ORDER.forEach((k) => {
       const o = document.createElement("option");
-      o.value = k; o.textContent = PRESETS[k].label;
+      o.value = k; o.textContent = tName(PRESETS[k].label);
       platformSel.appendChild(o);
     });
     const oc = document.createElement("option");
     oc.value = "custom";
-    oc.textContent = "自定义（兜底 / 自由裁剪）";
+    oc.textContent = t("custom_opt");
     platformSel.appendChild(oc);
   }
 
   function buildSpecSelect(platformKey) {
     presetSel.innerHTML = "";
-    PRESETS[platformKey].items.forEach((it) => {
+    const items = platformKey === "custom" ? [] : PRESETS[platformKey].items;
+    items.forEach((it) => {
       const o = document.createElement("option");
       o.value = it.id;
-      o.textContent = it.name.includes(":") ? it.name : `${it.name} ${cleanRatio(it.w, it.h)}`;
+      const nm = tName(it.name);
+      o.textContent = nm.includes(":") ? nm : `${nm} ${cleanRatio(it.w, it.h)}`;
       presetSel.appendChild(o);
     });
   }
 
   function buildFormatSelect() {
+    fmtSel.innerHTML = "";
     EXPORT_FORMATS.forEach((f) => {
       const o = document.createElement("option");
-      o.value = f.value; o.textContent = f.label;
+      o.value = f.value; o.textContent = t(f.labelKey);
       fmtSel.appendChild(o);
     });
+  }
+
+  // ---------- 速查表（按语言渲染，覆盖国内外平台） ----------
+  function renderSpecTable() {
+    const tb = document.getElementById("specBody");
+    if (!tb) return;
+    tb.innerHTML = "";
+    SPEC_ROWS.forEach(([pk, iid]) => {
+      const p = PRESETS[pk], it = PRESET_MAP[iid];
+      if (!p || !it) return;
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        `<td>${escapeHtml(tName(p.label))}</td>` +
+        `<td>${escapeHtml(tName(it.name))}</td>` +
+        `<td>${it.w}×${it.h}</td>` +
+        `<td>${cleanRatio(it.w, it.h)}</td>`;
+      tb.appendChild(tr);
+    });
+  }
+
+  function setMeta(attr, key, val) {
+    const m = document.head.querySelector(`meta[${attr}="${key}"]`);
+    if (m) m.setAttribute("content", val);
+  }
+
+  // ---------- 多语言应用 ----------
+  function applyI18n(rebuild) {
+    const lang = getLang();
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+
+    // 静态文案（带 HTML 的用 innerHTML）
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+      el.innerHTML = t(el.getAttribute("data-i18n-html"));
+    });
+
+    // 页脚：替换 %Y
+    const fb = document.querySelector('[data-i18n="footer"]');
+    if (fb) fb.textContent = t("footer").replace("%Y", new Date().getFullYear());
+
+    // 元信息（标题 / 描述 / OG）
+    document.title = t("meta_title");
+    setMeta("name", "description", t("meta_desc"));
+    setMeta("property", "og:title", t("meta_title"));
+    setMeta("property", "og:description", t("meta_desc"));
+    setMeta("property", "og:locale", lang === "zh" ? "zh_CN" : "en_US");
+
+    // 速查表
+    renderSpecTable();
+
+    // 下载按钮（尚未导出时）
+    if (!lastBlobUrl) dlLink.textContent = t("dl_text");
+
+    // 语言按钮高亮
+    document.querySelectorAll(".lang-btn").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-lang") === lang);
+    });
+
+    // 切换语言时重建下拉（保留当前选择）
+    if (rebuild) {
+      const curP = platformSel.value, curS = presetSel.value, curF = fmtSel.value;
+      buildPlatformSelect(); buildSpecSelect(platformSel.value); buildFormatSelect();
+      if (curP) platformSel.value = curP;
+      if (curS) presetSel.value = curS;
+      if (curF) fmtSel.value = curF;
+    }
   }
 
   // ---------- 比例读数 ----------
@@ -130,14 +202,14 @@
       const d = cropper.getData();
       if (d && d.width && d.height) {
         const rw = Math.round(d.width), rh = Math.round(d.height);
-        ratioReadout.textContent = `当前比例 ${ratioLabel(d.width / d.height)} · 选区 ${rw}×${rh}px（拖拽实时更新）`;
+        ratioReadout.textContent = `${t("ratio_live")} ${ratioLabel(d.width / d.height)} · ${rw}×${rh}px（${t("live_update")}）`;
         return;
       }
     }
     if (state.lockRatio) {
-      ratioReadout.textContent = "锁定比例 " + ratioLabel(state.lockRatio);
+      ratioReadout.textContent = `${t("ratio_lock_prefix")} ${ratioLabel(state.lockRatio)}`;
     } else {
-      ratioReadout.textContent = "当前比例：自由裁剪（拖拽实时更新）";
+      ratioReadout.textContent = t("ratio_free");
     }
   }
 
@@ -440,13 +512,13 @@
     try { return JSON.parse(localStorage.getItem(TPL_KEY)) || {}; } catch (e) { return {}; }
   }
   function buildTemplateSel() {
-    templateSel.innerHTML = '<option value="">— 套用模板 —</option>';
+    templateSel.innerHTML = `<option value="">${t("tpl_placeholder")}</option>`;
     Object.keys(BUILTIN_TEMPLATES).forEach((k) => {
-      const o = document.createElement("option"); o.value = k; o.textContent = "内置：" + k; templateSel.appendChild(o);
+      const o = document.createElement("option"); o.value = k; o.textContent = t("tpl_builtin") + k; templateSel.appendChild(o);
     });
     const saved = loadTemplates();
     Object.keys(saved).forEach((k) => {
-      const o = document.createElement("option"); o.value = k; o.textContent = "我的：" + k; templateSel.appendChild(o);
+      const o = document.createElement("option"); o.value = k; o.textContent = t("tpl_mine") + k; templateSel.appendChild(o);
     });
   }
   function applyTemplate(name) {
@@ -670,7 +742,7 @@
       dlLink.href = lastBlobUrl;
       dlLink.download = `cropped-${composed.width}x${composed.height}.${ext}`;
       dlLink.textContent =
-        `⬇ 下载图片（${composed.width}×${composed.height} · ${(blob.size / 1024).toFixed(0)} KB）`;
+        t("dl_text_with").replace("%s", `${composed.width}×${composed.height} · ${(blob.size / 1024).toFixed(0)} KB`);
       dlLink.click();  // 导出后直接触发下载
     }, fmt, q);
   }
@@ -762,6 +834,17 @@
     onPlatformChange();
     updateRatioReadout();
     renderLayerList();
+
+    // 多语言：初始渲染当前语言文案/元信息/速查表；绑定切换按钮
+    applyI18n(false);
+    document.querySelectorAll(".lang-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        if (b.classList.contains("active")) return;
+        setLang(b.getAttribute("data-lang"));
+        applyI18n(true);
+        updateRatioReadout();
+      });
+    });
   }
 
   document.addEventListener("DOMContentLoaded", bind);

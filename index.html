@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>多平台配图裁剪工具 | 公众号/小程序/小红书/抖音封面配图在线裁剪</title>
   <meta name="description" content="免费在线图片裁剪工具，覆盖微信、微信小程序、小红书、抖音/视频号、微博、哔哩哔哩等平台。内置封面图、分享图、推广图、竖屏/横屏配图预设尺寸，支持按比例或自定义像素裁剪，导出 PNG / JPEG / WebP。图片全程在本地浏览器处理，不上传服务器，安全隐私。" />
-  <meta name="keywords" content="图片裁剪,在线裁剪,公众号封面图,公众号配图,小程序分享图,小程序推广图,小红书配图,抖音封面,微博封面,B站封面,9:16,3:4,2.35:1,5:4,像素裁剪" />
+  <meta name="keywords" content="图片裁剪,在线裁剪,公众号封面图,公众号配图,小程序分享图,小程序推广图,小红书配图,抖音封面,微博封面,B站封面,YouTube封面,Instagram配图,9:16,3:4,2.35:1,5:4,像素裁剪" />
   <meta name="author" content="img-cropper" />
   <link rel="canonical" href="https://img-cropper-1bm.pages.dev/" />
 
@@ -28,7 +28,7 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
     "description": "覆盖微信、微信小程序、小红书、抖音/视频号、微博、哔哩哔哩等平台配图尺寸的在线裁剪工具，支持比例与像素裁剪，导出 PNG/JPEG/WebP。",
     "featureList": [
-      "微信 / 小程序 / 小红书 / 抖音 等平台预设",
+      "微信 / 小程序 / 小红书 / 抖音 / YouTube / Instagram 等平台预设",
       "按比例裁剪",
       "自定义像素尺寸裁剪（兜底）",
       "PNG / JPEG / WebP 导出（含大小预估）",
@@ -42,9 +42,15 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="wrap">
-      <h1 class="logo">🖼️ 多平台配图裁剪工具</h1>
-      <p class="tagline">公众号 · 小程序 · 小红书 · 抖音 等平台封面/配图，一键按比例或像素裁剪导出</p>
+    <div class="wrap header-wrap">
+      <div class="header-brand">
+        <h1 class="logo">🖼️ <span data-i18n="meta_title_short">多平台配图裁剪工具</span></h1>
+        <p class="tagline" data-i18n="tagline">公众号 · 小程序 · 小红书 · 抖音 等平台封面/配图，一键按比例或像素裁剪导出</p>
+      </div>
+      <div class="lang-switch" role="group" aria-label="language">
+        <button type="button" class="lang-btn" data-lang="zh">中文</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
     </div>
   </header>
 
@@ -54,196 +60,182 @@
         <!-- 左侧：规格与导出控制面板 -->
         <aside class="col-left">
           <div class="panel" id="panelPreset">
-            <h2 class="panel-head">① 选择平台与规格</h2>
+            <h2 class="panel-head" data-i18n="panel_preset">① 选择平台与规格</h2>
             <div class="panel-body">
               <label class="field">
-                <span>平台</span>
+                <span data-i18n="platform_label">平台</span>
                 <select id="platformSel"></select>
               </label>
               <div id="presetWrap">
                 <label class="field">
-                  <span>规格（决定裁剪比例）</span>
+                  <span data-i18n="preset_label">规格（决定裁剪比例）</span>
                   <select id="presetSel"></select>
                 </label>
               </div>
-              <div id="customHint" class="custom-hint" style="display:none;">
+              <div id="customHint" class="custom-hint" style="display:none;" data-i18n="custom_hint">
                 自由裁剪模式：可手动输入宽高（自动按比例锁定），也可直接拖拽图片选择区域，下方实时显示当前比例。
               </div>
 
-              <div class="block-title">输出尺寸（像素，可自定义）</div>
-              <p class="muted tiny">比例由上方规格锁定；此处仅调整最终导出像素，例如同为 1:1 可设为 1080×1080 或 540×540。</p>
+              <div class="block-title" data-i18n="outsize_title">输出尺寸（像素，可自定义）</div>
+              <p class="muted tiny" data-i18n="outsize_tip">比例由上方规格锁定；此处仅调整最终导出像素，例如同为 1:1 可设为 1080×1080 或 540×540。</p>
               <div class="field-row">
                 <label class="field">
-                  <span>宽 (px)</span>
+                  <span data-i18n="width_label">宽 (px)</span>
                   <input type="number" id="inW" min="1" placeholder="如 1080" />
                 </label>
                 <label class="field">
-                  <span>高 (px)</span>
+                  <span data-i18n="height_label">高 (px)</span>
                   <input type="number" id="inH" min="1" placeholder="如 1080" />
                 </label>
               </div>
               <label class="check">
                 <input type="checkbox" id="ratioLock" checked />
-                <span>锁定比例（取消可自由裁剪）</span>
+                <span data-i18n="ratio_lock_label">锁定比例（取消可自由裁剪）</span>
               </label>
-              <div id="ratioReadout" class="ratio-readout">当前比例：—</div>
+              <div id="ratioReadout" class="ratio-readout" data-i18n="ratio_none">当前比例：—</div>
             </div>
           </div>
 
           <div class="panel" id="panelExport">
-            <h2 class="panel-head">② 导出设置</h2>
+            <h2 class="panel-head" data-i18n="panel_export">② 导出设置</h2>
             <div class="panel-body">
               <label class="field">
-                <span>格式</span>
+                <span data-i18n="fmt_label">格式</span>
                 <select id="fmtSel"></select>
               </label>
               <div class="field" id="qualityRow">
-                <span>质量 <em id="qualityVal">92%</em></span>
+                <span><span data-i18n="quality_label">质量</span> <em id="qualityVal">92%</em></span>
                 <input type="range" id="quality" min="0.1" max="1" step="0.05" value="0.92" />
               </div>
-              <p class="est">预计导出大小：<span id="sizeEst">—</span></p>
-              <button id="exportBtn" class="btn-primary" type="button">裁剪并导出</button>
+              <p class="est"><span data-i18n="size_est_label">预计导出大小：</span><span id="sizeEst">—</span></p>
+              <button id="exportBtn" class="btn-primary" type="button" data-i18n="export_btn">裁剪并导出</button>
             </div>
           </div>
 
           <div class="panel" id="textPanel">
-            <h2 class="panel-head">③ 文字图层</h2>
+            <h2 class="panel-head" data-i18n="panel_text">③ 文字图层</h2>
             <div class="layer-bar">
-              <button id="addLayer" class="btn-mini" type="button">+ 添加文字</button>
+              <button id="addLayer" class="btn-mini" type="button" data-i18n="add_layer">+ 添加文字</button>
               <select id="templateSel" class="tpl-sel"></select>
-              <button id="saveTemplate" class="btn-mini" type="button">保存模板</button>
+              <button id="saveTemplate" class="btn-mini" type="button" data-i18n="save_template">保存模板</button>
             </div>
             <div class="panel-body">
               <ul id="layerList" class="layer-list"></ul>
               <div id="layerEditor" class="layer-editor" style="display:none;">
-              <label class="field"><span>文字内容（支持换行）</span><textarea id="layerText" rows="2"></textarea></label>
+              <label class="field"><span data-i18n="layer_text_label">文字内容（支持换行）</span><textarea id="layerText" rows="2"></textarea></label>
               <div class="field-row">
-                <label class="field"><span>字号 <em id="layerFontVal">6%</em></span><input type="range" id="layerFont" min="1" max="25" step="0.5" value="6" /></label>
-                <label class="field"><span>颜色</span><input type="color" id="layerColor" value="#ffffff" /></label>
+                <label class="field"><span data-i18n="font_label">字号</span> <input type="range" id="layerFont" min="1" max="40" step="1" value="6" /> <em id="layerFontVal">6%</em></label>
+                <label class="field"><span data-i18n="color_label">颜色</span><input type="color" id="layerColor" value="#ffffff" /></label>
               </div>
               <div class="field-row">
-                <label class="field"><span>对齐</span><select id="layerAlign"><option value="left">左</option><option value="center" selected>居中</option><option value="right">右</option></select></label>
-                <label class="field"><span>透明度 <em id="layerOpacityVal">100%</em></span><input type="range" id="layerOpacity" min="0.1" max="1" step="0.05" value="1" /></label>
+                <label class="field"><span data-i18n="align_label">对齐</span><select id="layerAlign"><option value="left" data-i18n="align_left">左</option><option value="center" selected data-i18n="align_center">居中</option><option value="right" data-i18n="align_right">右</option></select></label>
+                <label class="field"><span data-i18n="opacity_label">透明度</span> <input type="range" id="layerOpacity" min="0" max="1" step="0.05" value="1" /> <em id="layerOpacityVal">100%</em></label>
               </div>
               <div class="field-row">
-                <label class="field"><span>旋转 <em id="layerRotationVal">0°</em></span><input type="range" id="layerRotation" min="-180" max="180" step="1" value="0" /></label>
-                <label class="field"><span>换行宽 <em id="layerBoxWVal">0%</em></span><input type="range" id="layerBoxW" min="0" max="100" step="1" value="0" /></label>
+                <label class="field"><span data-i18n="rotation_label">旋转</span> <input type="range" id="layerRotation" min="-180" max="180" step="1" value="0" /> <em id="layerRotationVal">0°</em></label>
+                <label class="field"><span data-i18n="boxw_label">换行宽</span> <input type="range" id="layerBoxW" min="0" max="100" step="1" value="0" /> <em id="layerBoxWVal">0%</em></label>
               </div>
-              <label class="check"><input type="checkbox" id="layerBold" /> <span>加粗</span></label>
-              <label class="check"><input type="checkbox" id="layerBg" /> <span>半透明底条</span></label>
+              <label class="check"><input type="checkbox" id="layerBold" /> <span data-i18n="bold_label">加粗</span></label>
+              <label class="check"><input type="checkbox" id="layerBg" /> <span data-i18n="bg_label">半透明底条</span></label>
               <div class="field-row" id="bgRow" style="display:none;">
-                <label class="field"><span>底条色</span><input type="color" id="layerBgColor" value="#000000" /></label>
-                <label class="field"><span>底条透明度 <em id="layerBgOpacityVal">50%</em></span><input type="range" id="layerBgOpacity" min="0.1" max="1" step="0.05" value="0.5" /></label>
+                <label class="field"><span data-i18n="bg_color_label">底条色</span><input type="color" id="layerBgColor" value="#000000" /></label>
+                <label class="field"><span data-i18n="bg_opacity_label">底条透明度</span> <input type="range" id="layerBgOpacity" min="0" max="1" step="0.05" value="0.5" /> <em id="layerBgOpacityVal">50%</em></label>
               </div>
-              <label class="check"><input type="checkbox" id="layerTiled" /> <span>平铺水印</span></label>
+              <label class="check"><input type="checkbox" id="layerTiled" /> <span data-i18n="tiled_label">平铺水印</span></label>
             </div>
             </div>
           </div>
         </aside>
 
-        <!-- 右侧：图片处理区域（左半处理/上传区 ∥ 右半文字预览区，等宽等高） -->
+        <!-- 右侧：图片处理区域（左半处理区 ∥ 右半文字预览区，等宽等高） -->
         <div class="col-right">
-          <button id="reUpload" class="reupload" type="button" style="display:none;">↺ 重新上传图片</button>
+          <button id="reUpload" class="reupload" type="button" style="display:none;" data-i18n="reupload">↺ 重新上传图片</button>
 
           <div class="work-row">
             <!-- 左半：图片处理（未上传时为上传区，上传后为裁剪区） -->
             <div class="work-cell">
-              <p class="cell-cap">图片处理</p>
+              <p class="cell-cap" data-i18n="cell_cap_crop">图片处理</p>
               <div id="dropZone" class="drop-zone" tabindex="0">
                 <input type="file" id="fileInput" accept="image/*" hidden />
                 <div id="emptyHint" class="drop-hint">
                   <p class="drop-icon">⬆️</p>
-                  <p><strong>点击或拖拽图片到此处上传</strong></p>
-                  <p class="muted">支持 JPG / PNG / WebP / GIF 等常见格式</p>
+                  <p><strong data-i18n="drop_title">点击或拖拽图片到此处上传</strong></p>
+                  <p class="muted" data-i18n="drop_sub">支持 JPG / PNG / WebP / GIF 等常见格式</p>
                 </div>
               </div>
               <div id="cropStage" class="crop-stage" style="display:none;">
                 <img id="cropImg" alt="待裁剪图片" />
               </div>
-              <p class="crop-tip">拖动图片移动 · 双指缩放 · 拉四角调整裁剪框</p>
+              <p class="crop-tip" data-i18n="crop_tip">拖动图片移动 · 双指缩放 · 拉四角调整裁剪框</p>
             </div>
 
             <!-- 右半：文字预览（拖拽定位区，合成结果实时可见） -->
             <div class="work-cell">
-              <p class="cell-cap">文字预览（可直接拖拽文字框定位）</p>
+              <p class="cell-cap" data-i18n="cell_cap_text">文字预览（可直接拖拽文字框定位）</p>
               <div id="textPreview" class="text-preview">
                 <div id="tpImageWrap" class="tp-image-wrap">
                   <div class="tp-inner">
                     <img id="tpImg" alt="文字预览" />
                     <div id="tpOverlay" class="tp-overlay"></div>
                   </div>
-                  <p id="tpEmpty" class="tp-empty">上传图片并添加文字后<br />这里实时显示合成预览</p>
+                  <p id="tpEmpty" class="tp-empty" data-i18n-html="tp_empty">上传图片并添加文字后<br />这里实时显示合成预览</p>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- 结果即所见：底部仅保留下载按钮 -->
-          <a id="dlLink" class="btn-download" href="javascript:void(0)">⬇ 下载图片</a>
+          <a id="dlLink" class="btn-download" href="javascript:void(0)" data-i18n="dl_text">⬇ 下载图片</a>
         </div>
       </div>
     </section>
 
     <!-- SEO 内容区：长尾关键词落地，便于爬虫与 AI 抓取 -->
     <section class="features">
-      <h2>为什么用这个工具？</h2>
+      <h2 data-i18n="features_h2">为什么用这个工具？</h2>
       <ul class="feat-grid">
         <li>
-          <h3>🎯 多平台预设尺寸</h3>
-          <p>覆盖微信、微信小程序、小红书、抖音/视频号、微博、B站 的封面、分享图、推广图、竖屏/横屏配图，选完直接裁。</p>
+          <h3 data-i18n="f1_t">🎯 多平台预设尺寸</h3>
+          <p data-i18n="f1_p">覆盖微信、微信小程序、小红书、抖音/视频号、微博、B站 的封面、分享图、推广图、竖屏/横屏配图，选完直接裁。</p>
         </li>
         <li>
-          <h3>🔒 本地处理，隐私安全</h3>
-          <p>所有图片仅在你的浏览器内用 Canvas 处理，<strong>不会上传到任何服务器</strong>，素材不外泄。</p>
+          <h3 data-i18n="f2_t">🔒 本地处理，隐私安全</h3>
+          <p data-i18n="f2_p">所有图片仅在你的浏览器内用 Canvas 处理，<strong>不会上传到任何服务器</strong>，素材不外泄。</p>
         </li>
         <li>
-          <h3>📐 比例 / 像素双模式</h3>
-          <p>既能按常用比例一键锁定，也能输入精确的像素宽高，输出严格等于目标尺寸；自定义兜底支持任意尺寸。</p>
+          <h3 data-i18n="f3_t">📐 比例 / 像素双模式</h3>
+          <p data-i18n="f3_p">既能按常用比例一键锁定，也能输入精确的像素宽高，输出严格等于目标尺寸；自定义兜底支持任意尺寸。</p>
         </li>
         <li>
-          <h3>📦 多格式 + 大小预估</h3>
-          <p>支持 PNG（无损/透明）、JPEG、WebP，并实时预估导出文件大小，清晰与体积一目了然。</p>
+          <h3 data-i18n="f4_t">📦 多格式 + 大小预估</h3>
+          <p data-i18n="f4_p">支持 PNG（无损/透明）、JPEG、WebP，并实时预估导出文件大小，清晰与体积一目了然。</p>
         </li>
         <li>
-          <h3>📱 持续扩展</h3>
-          <p>平台与规格以数据表维护，新增平台或尺寸只需改一处，后续可持续扩展。</p>
+          <h3 data-i18n="f5_t">📱 持续扩展</h3>
+          <p data-i18n="f5_p">平台与规格以数据表维护，新增平台或尺寸只需改一处，后续可持续扩展。</p>
         </li>
         <li>
-          <h3>⚡ 纯静态，秒开</h3>
-          <p>无后端、无数据库，部署在 CDN 边缘，打开即用，手机电脑都适配。</p>
+          <h3 data-i18n="f6_t">⚡ 纯静态，秒开</h3>
+          <p data-i18n="f6_p">无后端、无数据库，部署在 CDN 边缘，打开即用，手机电脑都适配。</p>
         </li>
       </ul>
 
-      <h2>常见尺寸速查</h2>
+      <h2 data-i18n="spec_h2">常见尺寸速查</h2>
       <table class="spec-table">
-        <thead><tr><th>平台</th><th>用途</th><th>尺寸</th><th>比例</th></tr></thead>
-        <tbody>
-          <tr><td>微信</td><td>封面大图（详情页）</td><td>900×383</td><td>2.35:1</td></tr>
-          <tr><td>微信</td><td>封面方形（列表）</td><td>1080×1080</td><td>1:1</td></tr>
-          <tr><td>微信</td><td>分享 / 朋友圈海报</td><td>1080×1920</td><td>9:16</td></tr>
-          <tr><td>微信</td><td>正文横屏配图</td><td>1080×607</td><td>16:9</td></tr>
-          <tr><td>微信</td><td>正文竖屏配图</td><td>1080×1440</td><td>3:4</td></tr>
-          <tr><td>小程序</td><td>分享图片（卡片）</td><td>500×400</td><td>5:4</td></tr>
-          <tr><td>小程序</td><td>详细推广图（横版）</td><td>1200×800</td><td>3:2</td></tr>
-          <tr><td>小程序</td><td>详细推广图（竖版）</td><td>750×1334</td><td>9:16</td></tr>
-          <tr><td>小程序</td><td>通用素材封面</td><td>800×800</td><td>1:1</td></tr>
-          <tr><td>小红书</td><td>竖版封面（推荐）</td><td>1242×1660</td><td>3:4</td></tr>
-          <tr><td>小红书</td><td>横版</td><td>1440×1080</td><td>4:3</td></tr>
-          <tr><td>抖音/视频号</td><td>竖屏封面</td><td>1080×1920</td><td>9:16</td></tr>
-          <tr><td>微博</td><td>主页封面</td><td>920×300</td><td>约3:1</td></tr>
-          <tr><td>哔哩哔哩</td><td>视频封面</td><td>1146×717</td><td>16:10</td></tr>
-        </tbody>
+        <thead><tr><th data-i18n="spec_th_platform">平台</th><th data-i18n="spec_th_use">用途</th><th data-i18n="spec_th_size">尺寸</th><th data-i18n="spec_th_ratio">比例</th></tr></thead>
+        <tbody id="specBody"></tbody>
       </table>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p class="muted">本地图片处理工具 · 图片不上传服务器 · © <span id="year"></span> img-cropper</p>
+    <p class="muted" data-i18n="footer">本地图片处理工具 · 图片不上传服务器 · © 2026 img-cropper</p>
   </footer>
 
-  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>document.getElementById("year") && (document.getElementById("year").textContent = new Date().getFullYear());</script>
   <script src="vendor/cropper.min.js"></script>
   <script src="js/presets.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

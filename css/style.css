@@ -24,8 +24,17 @@ a { color: var(--green-d); }
 
 /* 头部 */
 .site-header { background: var(--card); border-bottom: 1px solid var(--line); padding: 22px 0; }
+.header-wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.header-brand { min-width: 0; }
 .logo { margin: 0; font-size: 24px; }
 .tagline { margin: 4px 0 0; color: var(--muted); }
+
+/* 语言切换 */
+.lang-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; flex: none; }
+.lang-btn { border: none; background: #fff; color: var(--ink); font-size: 13px; padding: 7px 14px; cursor: pointer; }
+.lang-btn + .lang-btn { border-left: 1px solid var(--line); }
+.lang-btn.active { background: var(--green); color: #fff; }
+.lang-btn:hover:not(.active) { background: #f0fff7; }
 
 /* 工具区：左栏控制面板（宽按视口比例）+ 右栏图片处理区 */
 .tool { margin: 24px 0; }
