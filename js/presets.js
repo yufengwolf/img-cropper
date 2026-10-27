@@ -12,6 +12,7 @@ const PRESETS = {
     label: { zh: "通用", en: "Common" },
     items: [
       { id: "c-1x1",  name: { zh: "1:1 方形",          en: "1:1 square" },         w: 1080, h: 1080, desc: "1:1" },
+      { id: "c-circle", name: { zh: "圆形裁剪（拖拽调整）", en: "Circle (drag to resize)" }, w: 500, h: 500, desc: "1:1", shape: "circle" },
       { id: "c-4x3",  name: { zh: "4:3",               en: "4:3" },                w: 1440, h: 1080, desc: "4:3" },
       { id: "c-3x4",  name: { zh: "3:4 竖版",          en: "3:4 portrait" },       w: 1080, h: 1440, desc: "3:4" },
       { id: "c-16x9", name: { zh: "16:9 宽屏",         en: "16:9 landscape" },     w: 1920, h: 1080, desc: "16:9" },

@@ -84,6 +84,7 @@ a { color: var(--green-d); }
 .text-preview { flex: 1; min-height: 0; display: flex; }
 .tp-image-wrap { position: relative; flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; width: 100%; background: #2b2f36; border-radius: var(--radius); padding: 8px; }
 .tp-inner { position: relative; max-width: 100%; line-height: 0; }
+.tp-inner.circle-preview { border-radius: 50%; overflow: hidden; }
 .tp-inner > img { display: block; max-width: 100%; width: auto; height: auto; border-radius: 6px; }
 .tp-overlay { position: absolute; inset: 0; pointer-events: none; }
 .tp-empty { position: absolute; inset: 0; margin: 0; padding: 16px; display: flex; align-items: center; justify-content: center; text-align: center; color: #9aa3ad; font-size: 13px; line-height: 1.7; pointer-events: none; }
@@ -121,6 +122,9 @@ textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border
 }
 .crop-stage .cropper-container { max-height: 100%; }
 .crop-stage img { max-width: 100%; display: block; }
+.crop-stage.circle-crop-active .cropper-view-box,
+.crop-stage.circle-crop-active .cropper-face { border-radius: 50%; }
+.crop-stage.circle-crop-active .cropper-view-box { outline: 1px solid rgba(255,255,255,.9); }
 /* 手机操作提示：仅窄屏显示 */
 .crop-tip { display: none; margin: 0; font-size: 12px; color: var(--muted); text-align: center; }
 

@@ -59,7 +59,7 @@
   let estTimer = null;
   let refreshTimer = null;
   let layerSeq = 0;
-  const state = { targetW: null, targetH: null, lockRatio: null, layers: [], selLayer: null };
+  const state = { targetW: null, targetH: null, lockRatio: null, layers: [], selLayer: null, circlePreviousFormat: null };
 
   // ---------- 工具 ----------
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -217,6 +217,7 @@
   function onPlatformChange() {
     const p = platformSel.value;
     if (p === "custom") {
+      applyPresetShape(null);
       presetWrap.style.display = "none";
       customHint.style.display = "block";
       presetSel.innerHTML = "";
@@ -238,11 +239,12 @@
   function onPresetChange() {
     const it = PRESET_MAP[presetSel.value];
     if (!it) return;
+    applyPresetShape(it);
     inW.value = it.w;
     inH.value = it.h;
     state.targetW = it.w;
     state.targetH = it.h;
-    state.lockRatio = it.w / it.h;     // 比例由规格决定
+    state.lockRatio = it.shape === "circle" ? 1 : it.w / it.h;
     ratioLock.checked = true;
     setRatio(state.lockRatio);
     updateRatioReadout();
@@ -279,6 +281,29 @@
     if (cropper) cropper.setAspectRatio(isNaN(r) ? NaN : r);
   }
 
+  function isCircleMode() {
+    const it = PRESET_MAP[presetSel.value];
+    return !!(it && it.shape === "circle");
+  }
+
+  function applyPresetShape(item) {
+    const circular = !!(item && item.shape === "circle");
+    cropStage.classList.toggle("circle-crop-active", circular);
+    if (circular) {
+      if (state.circlePreviousFormat === null) state.circlePreviousFormat = fmtSel.value;
+      fmtSel.value = "image/png";
+      fmtSel.disabled = true;
+      qualityRow.style.display = "none";
+    } else {
+      fmtSel.disabled = false;
+      if (state.circlePreviousFormat !== null) {
+        fmtSel.value = state.circlePreviousFormat;
+        state.circlePreviousFormat = null;
+      }
+      qualityRow.style.display = fmtSel.value === "image/png" ? "none" : "flex";
+    }
+  }
+
   function onRatioLockToggle() {
     if (ratioLock.checked) {
       if (state.targetW && state.targetH) state.lockRatio = state.targetW / state.targetH;
@@ -293,7 +318,14 @@
 
   // 把当前面板选择应用到裁剪框
   function applyCurrentToCropper() {
-    if (platformSel.value === "custom") {
+    if (isCircleMode()) {
+      const diameter = parseInt(inW.value, 10) || 500;
+      inW.value = inH.value = diameter;
+      state.targetW = state.targetH = diameter;
+      state.lockRatio = 1;
+      ratioLock.checked = true;
+      setRatio(1);
+    } else if (platformSel.value === "custom") {
       ratioLock.checked = false;
       state.lockRatio = null;
       setRatio(NaN);
@@ -627,14 +659,27 @@
     return c;
   }
 
+  function applyCircleMask(canvas) {
+    if (!isCircleMode()) return canvas;
+    const ctx = canvas.getContext("2d");
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-in";
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) / 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return canvas;
+  }
+
   // ---------- 文字预览（叠层可拖拽） ----------
   function renderTextPreview() {
     if (!cropper) return;
     const canvas = cropper.getCroppedCanvas(currentOpts());
     if (!canvas) return;
     if (tpEmpty) tpEmpty.style.display = "none";
+    tpImg.parentElement.classList.toggle("circle-preview", isCircleMode());
     tpImg.onload = () => { fitPreviewImg(); buildOverlay(); };
-    tpImg.src = canvas.toDataURL("image/jpeg", 0.85);
+    tpImg.src = applyCircleMask(composeText(canvas, state.layers)).toDataURL("image/png");
   }
   // 预览图按衬底可用空间等比缩放（contain）：纯 CSS 的百分比限高在嵌套 flex 中会 cyclic 失效，
   // 且 overlay 必须贴合图片渲染框，故用实测尺寸赋值；tp-inner 为 inline-block 会跟随图片盒，
@@ -707,7 +752,7 @@
     if (!cropper) { sizeEst.textContent = "上传图片后显示"; return; }
     const canvas = cropper.getCroppedCanvas(currentOpts());
     if (!canvas) { sizeEst.textContent = "—"; return; }
-    const composed = composeText(canvas, state.layers);
+    const composed = applyCircleMask(composeText(canvas, state.layers));
     const fmt = fmtSel.value;
     const q = fmt === "image/png" ? undefined : parseFloat(quality.value);
     composed.toBlob((blob) => {
@@ -731,7 +776,7 @@
     const opts = currentOpts();
     const canvas = cropper.getCroppedCanvas(opts);
     if (!canvas) { alert("裁剪失败，请重试"); return; }
-    const composed = composeText(canvas, state.layers);
+    const composed = applyCircleMask(composeText(canvas, state.layers));
     const fmt = fmtSel.value;
     const q = fmt === "image/png" ? undefined : parseFloat(quality.value);
     const ext = fmt === "image/png" ? "png" : fmt === "image/jpeg" ? "jpg" : "webp";
